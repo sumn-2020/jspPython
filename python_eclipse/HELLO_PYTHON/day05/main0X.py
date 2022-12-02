@@ -29,7 +29,7 @@ class WindowClass(QMainWindow, form_class) :
 
     
     def setComRandom(self):
-        global com
+        global com #전역변수를 사용하면 지역변수처럼 안에 있어도 전역변수처럼 사용할 수 있음 
         
         arr9 = [1,2,3,4,5,6,7,8,9]
         
