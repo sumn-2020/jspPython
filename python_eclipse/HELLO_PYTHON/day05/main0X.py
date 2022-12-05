@@ -21,7 +21,9 @@ class WindowClass(QMainWindow, form_class) :
     def __init__(self) :
         super().__init__()
         self.setupUi(self) #form_class 클래스 구동시킨다. 
-        
+        #self.com = ""
+        #strike = self.getStrike(mine, self.com)
+        #self.getStrike(mine, self.com)
         
         self.pb.clicked.connect(self.pbFunction)#버튼에 기능을 연결하는 코드
         self.setComRandom()
@@ -52,15 +54,29 @@ class WindowClass(QMainWindow, form_class) :
 
         strike = self.getStrike(mine, com)
         ball = self.getBall(mine, com)
-           
-        result += mine + " " + str(strike)  + "S" + str(ball) + "B"
-        self.te.append(result) #textarea는 setText가 아니라 append써야됨 
-        self.le.setText("") # 작성된 글 새로 초기화 
-
+        
+        
+        str_old = self.te.toPlainText()
+        str_new = mine+" " + str(strike) + "S"+str(ball) + "B\n"
+        self.te.setText(str_old+str_new)
+        self.le.setText("")
+        
         if strike == 3: 
             msg = '정답입니다.'
             QMessageBox.question(self, '메시지', msg, QMessageBox.Yes, QMessageBox.NoButton)
         
+
+        
+           
+        # result += mine + " " + str(strike)  + "S" + str(ball) + "B"
+        # self.te.append(result) #textarea는 setText가 아니라 append써야됨 
+        # self.le.setText("") # 작성된 글 새로 초기화 
+        #
+        # if strike == 3: 
+        #     msg = '정답입니다.'
+        #     QMessageBox.question(self, '메시지', msg, QMessageBox.Yes, QMessageBox.NoButton)
+        #
+
 
     
 
@@ -108,10 +124,10 @@ class WindowClass(QMainWindow, form_class) :
         if c1 == m2 or c1 == m3: 
             ret += 1
     
-        if c2 == m1 or c1 == m3:
+        if c2 == m1 or c2 == m3:
             ret += 1
     
-        if c3 == m1 or c1 == m2:
+        if c3 == m1 or c3 == m2:
             ret += 1
     
     
