@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+  <Appenders>
+  	<!-- console appender 설정  -->
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/> <!-- 로그출력방식  -->
+      <!--  
+      	%msg : 메시지 
+      	%n : 줄바꿈
+      -->
+    </Console>
+    
+
+    <!-- File appender 설정 : log폴더 생기면서 log 파일에 로그정보 보여줌  -->
+    <File name="MyFile" fileName="logs/app.log">
+    	
+    	<PatternLayout>
+    		<Pattern>%d %-5p %c{1} [%t] %C{2} (%F:%L) - %m%n</Pattern>
+    	</PatternLayout>
+    	
+    </File>
+  </Appenders>
+  
+ 
+
+  <Loggers>
+  	
+  	<!-- 여기에 로거 추가 -->
+  	<!-- root에 설정한 것보다 레벨이 낮은 건 로그로 안보여줌. 그래서 레벨 낮은 거를 따로 보고싶으면 따로 정해줘야됨 -->
+  	<!--  additivity="false" : 예전에 추가된거는 안보여줌 / 중복등록방지 -->
+  	<Logger name="log4jexam.sql" level="debug" additivity="false">
+  		<AppenderRef ref="Console"/>
+  	</Logger>
+  	<!-- <Logger name="log4jexam.sql.Query" level="debug" ></Logger> -->
+  	<!-- <Logger name="log4jexam.sql.Parameter" level="debug" ></Logger> -->
+  	<Logger name="kr.or.ddit.basic.T01MemberInfoTest" level="debug" ></Logger>
+
+
+
+
+    <Root level="trace"> 
+      <AppenderRef ref="Console"/>  
+    </Root>
+
+  </Loggers>
+</Configuration>
+
+
+
+
+
