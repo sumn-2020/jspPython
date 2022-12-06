@@ -15,7 +15,7 @@ sql = """
 cur.execute(sql)
 print("cnt", cur.rowcount)
 conn.commit()
-
+sql
 
 cur.close()
 conn.close()

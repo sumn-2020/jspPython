@@ -19,10 +19,6 @@ public class MyHello extends HttpServlet {
 		
 		PrintWriter out = response.getWriter();
 		out.println("Hello Servelt");
-		
-				
-				
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	

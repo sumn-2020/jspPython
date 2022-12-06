@@ -8,7 +8,8 @@ rows = cur.fetchall()
 
 
 #파이썬 cursor() = 자바 statment와 동급
-print(rows)
+for i in rows: 
+    print(i)
 
 
 cur.close()
