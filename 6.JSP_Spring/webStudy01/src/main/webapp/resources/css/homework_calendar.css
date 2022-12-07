@@ -47,4 +47,10 @@ white-space: nowrap; -webkit-clip-path: inset(50%);clip-path: inset(50%);border:
 .nav-group .btn-wrap .next::after {position: absolute;content: '';width: 15px; height: 15px; border-top: 2px solid rgba(255, 255, 255, 0.54);border-right: 2px solid rgba(255, 255, 255, 0.54); }
 .nav-group .btn-wrap .prev::after {transform: rotate(317deg);left: -58px; }
 .nav-group .btn-wrap .next::after {transform: rotate(135deg);    top: -9px;}
+.months {display: none; }
+.months > a {color: #fff; width: calc(100% / 4 );  display: inline-block; text-align: center; padding: 46px 0;}
+
+
+
+
 

@@ -9,7 +9,15 @@
 	pageEncoding="UTF-8"%>
 	
 
+<!-- 
 
+https://bigtop.tistory.com/66
+https://bigtop.tistory.com/64
+https://coding-with-jina.tistory.com/86
+https://cheri.tistory.com/62
+
+-->	
+	
 	
 <!DOCTYPE html>
 <html>
@@ -47,8 +55,6 @@ window.onload = function(){
 	}
 	
 	
-	
-	
 
 	//***달력 그리기 ***
 	/* const renderCalendar = () =>  */
@@ -67,6 +73,7 @@ window.onload = function(){
 		document.querySelector('.year-month').innerText = `\${viewYear}년 \${viewMonth+1}월` ;
 
 		
+
 		//지난달 마지막 Date, 이번달 마지막 Date 출력 
 		//new Date(year, month, 0).getDate() : 특정 연도, 월의 마지막 날짜 확인
 		//특정 일자 요일 :  일요일 0 ~ 토요일 6
@@ -87,9 +94,9 @@ window.onload = function(){
 		const nextDates = [];
 
 		//prevDates  계산
-		if(PLDay !== 6 ) { // 7개가 안된다?
+		if(PLDay !== 6 ) {
 			for(let i = 0; i < PLDay + 1; i++) {
-				prevDates.unshift(PLDate - i); // 배열의 맨 앞에 값을 제거한다.
+				prevDates.unshift(PLDate - i);
 			}
 		}
 		
@@ -104,14 +111,10 @@ window.onload = function(){
 		//Dates 정리
 		const firstDateIndex = dates.indexOf(1);
 		const lastDateIndex = dates.lastIndexOf(TLDate);
-		dates.forEach(function(date,i){
+		dates.forEach((date, i) => {
 			const condition = i >= firstDateIndex && i < lastDateIndex + 1 ? 'this' : 'other';
 			dates[i] = `<div class="date"><span class="\${condition}">\${date}</span></div>`;
 		});
-		/* dates.forEach((date, i) => {
-			const condition = i >= firstDateIndex && i < lastDateIndex + 1 ? 'this' : 'other';
-			dates[i] = `<div class="date"><span class="\${condition}">\${date}</span></div>`;
-		}); */
 		
 		// Dates 그리기
 		document.querySelector('.dates').innerHTML = dates.join('');
@@ -129,7 +132,56 @@ window.onload = function(){
 		     }
 		   }
 		}
+
+	
 	}
+	
+
+	/////////////////////////////////
+	
+	// 달만 출력 
+	const months = document.querySelector('.months');
+	const dateContainer = document.querySelector('.date-container');
+	const monthsArray = function() {
+		
+		const viewYear = date.getFullYear(); // 년도 가져오기 
+		
+		// 가져온 년 ,월로 year-month클래스 가진 태그에 년월 채우기
+		document.querySelector('.year-month').innerText = `\${viewYear}년` ;
+		months.style.display = "block";
+		dateContainer.style.display = "none";
+	
+		//전월 출력하기
+		const monthArray= [];
+		const d = new Date();
+
+		
+		for(let month = 1; month <= 12; ++month) {
+		   d.setMonth(month);
+		   monthArray.push(month);
+		}
+
+		months.innerHTML =  "<a href='javascript:void(0)'>" + monthArray[0] + "</a>" + 
+							"<a href='javascript:void(0)'>" + monthArray[1] + "</a>" +
+							"<a href='javascript:void(0)'>" + monthArray[2] + "</a>" + 
+							"<a href='javascript:void(0)'>" + monthArray[3] + "</a>" +
+							"<a href='javascript:void(0)'>" + monthArray[4] + "</a>" +
+							"<a href='javascript:void(0)'>" + monthArray[5] + "</a>" +
+							"<a href='javascript:void(0)'>" + monthArray[6] + "</a>" +
+							"<a href='javascript:void(0)'>" + monthArray[7] + "</a>" +
+							"<a href='javascript:void(0)'>" + monthArray[8] + "</a>" +
+							"<a href='javascript:void(0)'>" + monthArray[9] + "</a>" +
+							"<a href='javascript:void(0)'>" + monthArray[10] + "</a>"+
+							"<a href='javascript:void(0)'>" + monthArray[11] + "</a>";  
+	
+	}
+	document.querySelector('.year-month').addEventListener('click', function() {
+		monthsArray();
+	});
+	
+	/////////////////////////////////
+	
+		
 	
 	//***이전달 다음달로 이동하기  버튼 이벤트 ***
 	const prevBtn = document.querySelector('#prev');
@@ -137,17 +189,35 @@ window.onload = function(){
 	const todayBtn = document.querySelector('#today'); 
 	
 	prevBtn.addEventListener('click', function() {
-		date.setMonth(date.getMonth() - 1);
-		renderCalendar();
+		if(dateContainer.style.display == "block") {
+			date.setMonth(date.getMonth() - 1);
+			renderCalendar();
+		}else if(months.style.display == "block") {
+			date.setYear(date.getFullYear() - 1);
+			monthsArray();
+		}
+		
 	});
 	nextBtn.addEventListener('click', function() {
-		date.setMonth(date.getMonth() + 1);
-		renderCalendar();
+		if(dateContainer.style.display == "block") {
+			date.setMonth(date.getMonth() + 1);
+			renderCalendar();
+		}else if(months.style.display == "block") {
+			date.setYear(date.getFullYear() + 1);
+			monthsArray();
+		}
 	});
 	todayBtn.addEventListener('click', function() {
 		date = new Date();
+		months.style.display = "none";
+		dateContainer.style.display = "block";
 		renderCalendar();
 	});
+	
+	
+	
+	
+
 
 
 	renderCalendar();
@@ -172,23 +242,28 @@ window.onload = function(){
 		<div class="calendar-group">
 			<div class="t-head">
 				<div class="nav-group">
-					<button type="button" class="year-month"></button>
+					<button type="button" class="year-month"><span class="hide"></span></button>
 					<div class="btn-wrap">
 						<button type="button" id="prev" class="prev"><span class="hide">이전달</span></button>
 						<button type="button" id="next" class="next"><span class="hide">다음달</span></button>
 					</div>
 				</div>
 			</div>
-			<ul class="days">
-				<li class="">일</li>
-				<li class="">월</li>
-				<li class="">화</li>
-				<li class="">수</li>
-				<li class="">목</li>
-				<li class="">금</li>
-				<li class="">토</li>
-			</ul>
-			<div class="dates"></div>
+			
+			<div class="date-container" style="display: block;">
+				<ul class="days">
+					<li class="">일</li>
+					<li class="">월</li>
+					<li class="">화</li>
+					<li class="">수</li>
+					<li class="">목</li>
+					<li class="">금</li>
+					<li class="">토</li>
+				</ul>
+				<div class="dates"></div>
+			</div>
+			<div class="months"></div>
+			<div class="years"></div>
 		</div>
 		<!--  //달력 본문 calendar-group -->
 	</div>

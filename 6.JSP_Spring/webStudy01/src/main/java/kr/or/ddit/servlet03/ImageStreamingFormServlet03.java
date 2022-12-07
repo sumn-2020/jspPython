@@ -3,6 +3,7 @@ package kr.or.ddit.servlet03;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,13 +20,14 @@ import javax.servlet.http.HttpServletResponse;
  *
  */
 
+
 @WebServlet("/03/imageForm.do") //응답은 여기서 하고   (model 2방식)
 public class ImageStreamingFormServlet03 extends HttpServlet {
 	
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
+
 		
 		//application은 이미 우리가 호출할 팔요 없음 톰캣 톨면서 이미 
 		//application = getServletContext(); //단 한번 생성되는 싱글톤 객체 
