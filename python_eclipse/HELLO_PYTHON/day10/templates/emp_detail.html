@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<script>
+	function fn_edit() {
+		var e_id = "{{emp.e_id}}";
+		location.href = "emp_edit?e_id="+e_id;
+	}
+	function fn_delete() {
+		//get방식
+		//var e_id = "{{emp.e_id}}";
+		//location.href = "fn_delete_act?e_id="+e_id;
+		
+		/* if(!confirm('삭제하시면 복구할 수 없습니다. 정말로 삭제하시겠습니까?')){
+			return false; // return false하면 더이상 밑으로 안내려 감 
+		} */
+		
+		var flag = confirm("삭제하시면 복구할 수 없습니다. 정말로 삭제하시겠습니까?");
+		if(!flag) {
+			return;	// return하면 더이상 밑으로 안내려 감 		 
+		}
+		
+		//post방식 name으로 submit
+		document.frm.submit();
+	} 
+
+</script>
+</head>
+<body>
+<!-- emp_detail {{emp}} -->
+
+emp_detail 
+<!-- 삭제하기 post방식   -->
+<form action="emp_delete_act" name="frm" method="post">
+	<input type="hidden" name="e_id" value="{{emp.e_id}}" />
+</form>
+<!--  // 삭제하기 post방식   -->
+
+<table border='1px'>
+	<tr>
+		<td>아이디</td>
+		<td>{{emp.e_id}}</td>
+	</tr>
+	<tr>
+		<td>이름</td>
+		<td>{{emp.e_name}}</td>
+	</tr>
+	<tr>
+		<td>성별</td>
+		<td>{{emp.sex}}</td>
+	</tr>
+	<tr>
+		<td>주소</td>
+		<td>{{emp.addr}}</td>
+	</tr>
+</table>
+<input type="button" value="수정" onclick="fn_edit()" />
+<input type="button" value="삭제" onclick="fn_delete()"  />
+
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<script>
+
+var cnt = "{{cnt}}";
+
+if(cnt==1) { //정상처리 되었을 경우
+	alert("정상적으로 삭제되었습니다.");
+	location.href = "emp_list";
+}else{
+	history.back(); // 뒤로가기 
+}
+</script>
+
+</head>
+<body>
+
+</body>
+</html>

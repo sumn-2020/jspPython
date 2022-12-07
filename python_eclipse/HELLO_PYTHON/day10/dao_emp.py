@@ -1,5 +1,6 @@
 import psycopg2
 
+
 class DaoEmp:
     
     #db 연동
@@ -61,7 +62,7 @@ class DaoEmp:
     
     
     ###update###
-    def update(self, e_name, sex, addr):
+    def update(self, e_id, e_name, sex, addr):
         sql = f"""
             
             update emp
@@ -69,6 +70,8 @@ class DaoEmp:
                 e_name = '{e_name}',
                 sex = '{sex}',
                 addr = '{addr}'
+            where
+                e_id = '{e_id}'
         
         """
         self.cur.execute(sql)

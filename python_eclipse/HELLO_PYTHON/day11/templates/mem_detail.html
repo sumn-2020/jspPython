@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+
+
+<script>
+
+function fn_edit() {
+	var m_id = "{{mem.m_id}}";
+	location.href = "mem_edit?m_id="+m_id;
+}
+
+
+function fn_delete() {
+
+	
+	var flag = confirm("삭제하시면 복구할 수 없습니다. 정말로 삭제하시겠습니까?");
+	if(!flag) {
+		return;	// return하면 더이상 밑으로 안내려 감 		 
+	}
+	
+	//아래 form 태그로 보냄 
+	document.frm.submit();
+	
+
+}
+
+
+
+</script>
+
+</head>
+<body>
+
+mem_detail 
+
+
+<form action="mem_delete_act" name="frm" method="post">
+	<input type="hidden" name="m_id" value="{{mem.m_id}}" />
+</form>
+
+
+
+<table border='1px'>
+	<tr>
+		<td>아이디</td>
+		<td>{{mem.m_id}}</td>
+	</tr>
+	<tr>
+		<td>이름</td>
+		<td>{{mem.m_nm}}</td>
+	</tr>
+	<tr>
+		<td>전화번호</td>
+		<td>{{mem.tel}}</td>
+	</tr>
+	<tr>
+		<td>생년월일</td>
+		<td>{{mem.ymd}}</td>
+	</tr>
+</table>
+<input type="button" value="수정" onclick="fn_edit()"  />
+<input type="button" value="삭제" onclick="fn_delete()" />
+
+
+</body>
+</html>

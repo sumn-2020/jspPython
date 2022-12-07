@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<script>
+
+function fn_add() {
+	location.href="emp_add";
+}
+
+</script>
+
+</head>
+<body>
+
+emp_list
+
+<table border='1px'>
+	<tr>
+		<td>아이디</td>
+		<td>이름</td>
+		<td>성별</td>
+	</tr>
+	{% for e in list %}  <!-- 받아온 list안에서 아이템들(e)을 뽑아서 출력 -->
+	<tr>
+		<td><a href="emp_detail?e_id={{e.e_id}}">{{e.e_id}}</a></td>
+		<td>{{e.e_name}}</td>
+		<td>{{e.sex}}</td>
+	</tr>
+	{% endfor %}
+</table>
+<input type="button" value="추가" onclick="fn_add()" />
+
+
+
+</body>
+</html>
