@@ -18,6 +18,8 @@
 	
 	1. Request Line : URI, http(request) Method
 		request Method : 행위정보, 요청의 의도(목적)
+		=> get, post 방식만 공통적으로 모든 서버들이 지원하고 나머지는  서버환경에 따라 달라짐 
+		
 		POST(C)
 		GET(R)
 		PUT/PATCH(U) - 보통 PUT안에 PATCH 까지 들어가있음
@@ -25,7 +27,7 @@
 			PUT : 무조건 10개를 한꺼번에 수정
 		DELETE(D)  
 		HEAD : 응답데이터의 패키징 구조(LINE + HEADER)
-		OPTIONS : 현재 서버가 특정 메소드를 지원하는지 여부를 확인하기 위한 사전요청(preFlight request)에 사용
+		OPTIONS : "현재 서버가 특정 메소드를 지원하는지" 여부를 확인하기 위한 사전요청(preFlight request)에 사용
 		TRACE: 서버 디버깅 용도로 제한적으로 사용  ('클라이언트'가 '서버'를 디버깅 하고싶을 때 사용) 
 		
 		ex) 
