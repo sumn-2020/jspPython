@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+
+<script>
+
+//목록 화면 출력 list 
+function fn_list() {
+	$.ajax({
+		type: 'POST',
+		url: 'student',
+		dataType : 'JSON',
+		contentType: "application/json",
+		success: function(data){
+			
+			console.log(data.list[0].s_id);
+			
+			
+			var listArray = data.list;
+			var html = "";
+			for(var i = 0; i < listArray.length; i++) {
+
+				 var e = listArray[i];
+				html += `
+				<tr>
+					<td><a href="javascript:fn_one('${e.s_id}')">${e.s_id}</a></td>
+					<td>${e.s_name}</td>
+					<td>${e.mobile}</td>
+					<td>${e.address}</td>
+				</tr>
+				` 
+
+			 }
+			var obj = document.querySelector("#my_tbody");
+			obj.innerHTML = html; 
+		}
+	});
+}
+
+
+//detail 화면 출력 
+function fn_one(s_id) {
+	param = {
+		's_id':s_id	
+	};
+	$.ajax({
+        type: 'POST',
+        url: 'student_one',
+        data: JSON.stringify(param),
+        dataType : 'JSON',
+        contentType: "application/json",
+        success: function(data){
+        	console.log(data.student.s_id)
+        	
+        	var stu = data.student;
+        	
+        	var obj_s_id   = document.querySelector("#s_id");
+	       	var obj_s_name = document.querySelector("#s_name");
+	       	var obj_mobile    = document.querySelector("#mobile");
+	       	var obj_address   = document.querySelector("#address");	
+	       	
+	       	obj_s_id.value = stu.s_id;
+	       	obj_s_name.value = stu.s_name;
+	       	obj_mobile.value = stu.mobile;
+	       	obj_address.value = stu.address;
+	       	
+	       	
+	       	
+        }
+	});
+
+}
+
+
+//add 화면 출력 
+function fn_add(s_id, e_name,mobile, address) {
+	
+	 var obj_s_id   = document.querySelector("#s_id");
+	 var obj_s_name = document.querySelector("#s_name");
+	 var obj_mobile    = document.querySelector("#mobile");
+	 var obj_address   = document.querySelector("#address");
+	
+
+	var param = {
+		 's_id'		:obj_s_id.value, 
+		 's_name'	:obj_s_name.value, 
+		 'mobile'	:obj_mobile.value, 
+		 'address'	:obj_address.value
+	};
+	$.ajax({
+	        type: 'POST',
+	        url: 'student_add',
+	        data: JSON.stringify(param),
+	        dataType : 'JSON',
+	        contentType: "application/json",
+	        success: function(data){
+	        	console.log(data);
+
+	        	 var cnt = data.cnt;
+	        	 if(cnt == 1) {
+	        		 alert('정상적으로 추가되었습니다.');
+	        		 fn_list();
+	        		 
+	        		 //추가 후 빈칸으로 변경하기 
+	        		 obj_e_id.value = "";
+	        		 obj_e_name.value = "";
+	        		 obj_sex.value = "";
+	        		 obj_addr.value = "";
+
+	        	 }else {
+	        		 alert('추가도중 문제가 생겼습니다.');
+	        	 }
+	        	 
+	        	 
+	        }
+	});
+}
+
+
+//수정화면 출력 
+function fn_edit(s_id, e_name,mobile, address) {
+	
+	 var obj_s_id   = document.querySelector("#s_id");
+	 var obj_s_name = document.querySelector("#s_name");
+	 var obj_mobile    = document.querySelector("#mobile");
+	 var obj_address   = document.querySelector("#address");
+
+	var param = {
+		 's_id'		:obj_s_id.value, 
+		 's_name'	:obj_s_name.value, 
+		 'mobile'	:obj_mobile.value, 
+		 'address'	:obj_address.value
+	};
+	$.ajax({
+        type: 'POST',
+        url: 'student_edit',
+        data: JSON.stringify(param),
+        dataType : 'JSON',
+        contentType: "application/json",
+        success: function(data){
+        	//console.log(data);
+        	var cnt = data.cnt;
+        	if(cnt==1){
+        		alert('정상적으로 수정되었습니다.');
+        		fn_list();
+	       		 //추가 후 빈칸으로 변경하기 
+	       		 obj_s_id.value = "";
+	       		 obj_s_name.value = "";
+	       		 obj_mobile.value = "";
+	       		 obj_address.value = "";
+	
+        	}else {
+        		 alert('수정도중 문제가 생겼습니다.');
+        	}  
+        }
+	});	
+}
+
+
+
+
+//삭제 화면 출력 
+function fn_delete() {
+	
+	 var obj_s_id   = document.querySelector("#s_id");
+
+	 
+	var param = {
+			 's_id'		:obj_s_id.value
+	};
+	$.ajax({
+        type: 'POST',
+        url: 'student_delete',
+        data: JSON.stringify(param),
+        dataType : 'JSON',
+        contentType: "application/json",
+        success: function(data){
+        	var cnt = data.cnt;
+        	if(cnt==1){
+        		alert('정상적으로 삭제되었습니다.');
+        		fn_list();
+        		
+        		//추가 후 빈칸으로 변경하기 
+        		obj_s_id.value = "";
+	       		document.querySelector("#s_name").value = "";
+	       		document.querySelector("#mobile").value = "";
+	       		document.querySelector("#address").value = "";
+
+	       		 
+	       		 
+        		
+        		
+        	}else {
+        		 alert('삭제도중 문제가 생겼습니다.');
+        	}  
+        }
+	});
+	
+	
+	
+}
+
+
+</script>
+
+
+</head>
+
+
+<body onload="fn_list()">
+<table border="1px">
+	<thead>
+		<tr>
+			<td>번호</td>
+			<td>이름</td>
+			<td>전화번호</td>
+			<td>주소</td>
+		</tr>
+	</thead>
+	<tbody id="my_tbody">
+		<tr>
+			<td colspan="4">검색된 데이터가 없습니다.</td>
+		</tr>
+	</tbody>
+</table>
+
+
+<br><br>
+<table border="1px">
+	<tr>
+		<td>번호</td>
+		<td><input type="text" id="s_id"  /></td>
+	</tr>
+	<tr>
+		<td>이름</td>
+		<td><input type="text" id="s_name" /></td>
+	</tr>
+	<tr>
+		<td>전화번호</td>
+		<td><input type="text" id="mobile" /></td>
+	</tr>
+	<tr>
+		<td>주소</td>
+		<td><input type="text" id="address" /></td>
+	</tr>
+</table>
+
+
+<input type="button" value="추가" onclick="fn_add()" />
+<input type="button" value="수정" onclick="fn_edit()" />
+<input type="button" value="삭제" onclick="fn_delete()" />
+
+	
+	
+	
+	
+	
+	
+
+</body>
+</html>

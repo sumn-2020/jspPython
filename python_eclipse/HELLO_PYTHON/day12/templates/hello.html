@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script>
+
+function fn_list() {
+	
+	var postdata = {
+	    'id':'1'
+	};
+	$.ajax({
+	        type: 'POST',
+	        url: 'ajax',
+	        data: JSON.stringify(postdata),
+	        dataType : 'JSON',
+	        contentType: "application/json",
+	        success: function(data){
+	        	
+	        	 console.log(data);
+	        	 //console.log(data.list.length);
+	        	/*for(var i = 0; i < data.list.length; i++) {
+	        		console.log(data.list[i].e_id);
+	        	} */
+	        	
+	        	
+	        	var listArray = data.list;
+
+	            var html = "";
+	        	for(var i = 0; i < listArray.length; i++) {
+
+	        		//방법1
+		        	/* html += "<tr>";
+		        	html += "   <td>" + listArray[i].e_id + "</td>";
+		        	html += "   <td>" + listArray[i].e_name + "</td>";
+		        	html += "   <td>" + listArray[i].sex + "</td>";
+		        	html += "   <td>" + listArray[i].addr + "</td>";
+		        	html += "</tr>"; */
+
+		        	//방법2
+		        	/*var e = listArray[i];
+		        	html += "<tr>";
+		        	html += "   <td>" + e.e_id + "</td>";
+		        	html += "   <td>" + e.e_name + "</td>";
+		        	html += "   <td>" + e.sex + "</td>";
+		        	html += "   <td>" + e.addr + "</td>";
+		        	html += "</tr>";  */
+		        	
+		        	
+		        	//방법3
+		        	var e = listArray[i];
+		        	html += `
+		        	<tr>
+		    			<td><a href="javascript:fn_one('${e.e_id}')">${e.e_id}</a></td>
+		    			<td>${e.e_name}</td>
+		    			<td>${e.sex}</td>
+		    			<td>${e.addr}</td>
+		    		</tr>
+		        	`
+	
+	        	}
+	        	var obj = document.querySelector("#my_tbody");
+	        	//console.log(obj);
+	        	obj.innerHTML = html;
+	            //alert('성공! 데이터 값:' + data.result2['id']+" " + data.result2['password']+ " " + data.result2['email'])
+	        },
+	        error: function(request, status, error){
+	        	console.log(error);
+	        	//alert('ajax 통신 실패')
+	            //alert(error);
+	        }
+	});
+}
+
+
+//detail selectone
+function fn_one(e_id) {
+		var param = {
+		    'e_id':e_id
+		};
+		$.ajax({
+	        type: 'POST',
+	        url: 'ajax_one',
+	        data: JSON.stringify(param),
+	        dataType : 'JSON',
+	        contentType: "application/json",
+	        success: function(data){
+	        	 console.log(data.emp.e_id)
+	        	 //console.log(data.list[0].e_id);
+
+	        	 
+	        	 //자바스크립트 방식 
+	        	 var emp = data.emp;
+	        	 
+	        	 var obj_e_id   = document.querySelector("#e_id");
+	        	 var obj_e_name = document.querySelector("#e_name");
+	        	 var obj_sex    = document.querySelector("#sex");
+	        	 var obj_addr   = document.querySelector("#addr");
+	        	 
+	        	 obj_e_id.value = emp.e_id;
+	        	 obj_e_name.value = emp.e_name;
+	        	 obj_sex.value = emp.sex;
+	        	 obj_addr.value = emp.addr;
+	        	 
+	        	 //jquery 방식 
+	        	/*  $('#e_id').val(data.emp.e_id);
+	        	 $('#e_name').val(data.emp.e_name);
+	        	 $('#sex').val(data.emp.sex);
+	        	 $('#addr').val(data.emp.addr); */
+	        	 
+	        }
+
+		});
+}
+
+
+
+//추가버튼 insert 
+function fn_add(e_id,e_name,sex,addr) {
+	
+	 var obj_e_id   = document.querySelector("#e_id");
+	 var obj_e_name = document.querySelector("#e_name");
+	 var obj_sex    = document.querySelector("#sex");
+	 var obj_addr   = document.querySelector("#addr");
+	
+
+ 	var param = {
+		 'e_id'		:obj_e_id.value, 
+		 'e_name'	:obj_e_name.value, 
+		 'sex'		:obj_sex.value, 
+		 'addr'		:obj_addr.value
+	};
+	$.ajax({
+	        type: 'POST',
+	        url: 'ajax_add',
+	        data: JSON.stringify(param),
+	        dataType : 'JSON',
+	        contentType: "application/json",
+	        success: function(data){
+	        	 //console.log(data) 
+
+	        	 var cnt = data.cnt;
+	        	 /*  console.log(cnt);
+	        	 console.log("2");
+	        	 console.log(2); */
+	        	 
+	        	 if(cnt == 1) {
+	        		 alert('정상적으로 추가되었습니다.');
+	        		 fn_list();
+	        		 
+	        		 obj_e_id.value = "";
+	        		 obj_e_name.value = "";
+	        		 obj_sex.value = "";
+	        		 obj_addr.value = "";
+
+	        	 }else {
+	        		 alert('추가도중 문제가 생겼습니다.');
+	        	 }
+	        	 
+	        	 
+	        }
+	});
+
+	
+}
+
+
+//수정버튼  update
+function fn_edit(e_id,e_name,sex,addr) {
+	
+	var obj_e_id   = document.querySelector("#e_id");
+	var obj_e_name = document.querySelector("#e_name");
+	var obj_sex    = document.querySelector("#sex");
+	var obj_addr   = document.querySelector("#addr");
+
+ 	var param = {
+		 'e_id'		:obj_e_id.value, 
+		 'e_name'	:obj_e_name.value, 
+		 'sex'		:obj_sex.value, 
+		 'addr'		:obj_addr.value
+	}; 
+	$.ajax({
+        type: 'POST',
+        url: 'ajax_edit',
+        data: JSON.stringify(param),
+        dataType : 'JSON',
+        contentType: "application/json",
+        success: function(data){
+        	//console.log(data);
+        	var cnt = data.cnt;
+        	if(cnt==1){
+        		alert('정상적으로 수정되었습니다.');
+        		fn_list();
+        	}else {
+        		 alert('수정도중 문제가 생겼습니다.');
+        	}  
+        }
+	});	
+	
+}
+
+
+//delete 삭제버튼 
+function fn_delete() {
+	var obj_e_id   = document.querySelector("#e_id");
+ 	var param = {
+		 'e_id'		:obj_e_id.value
+	}; 
+	$.ajax({
+        type: 'POST',
+        url: 'ajax_delete',
+        data: JSON.stringify(param),
+        dataType : 'JSON',
+        contentType: "application/json",
+        success: function(data){
+        	var cnt = data.cnt;
+        	if(cnt==1){
+        		alert('정상적으로 삭제되었습니다.');
+        		fn_list();
+        	}else {
+        		 alert('수정도중 문제가 생겼습니다.');
+        	}  
+        }
+	});
+
+}
+
+</script>
+</head>
+
+
+<body onload="fn_list()">
+	<!-- <a href="javascript:fn_ajax()">CALL</a> -->
+
+<table border="1px">
+	<thead>
+		<tr>
+			<td>사번</td>
+			<td>이름</td>
+			<td>성별</td>
+			<td>주소</td>
+		</tr>
+	</thead>
+	<tbody id="my_tbody">
+		<tr>
+			<td colspan="4">검색된 데이터가 없습니다.</td>
+		</tr>
+	</tbody>
+</table>
+
+<br><br>
+<table border="1px">
+	<tr>
+		<td>사번</td>
+		<td><input type="text" id="e_id"  /></td>
+	</tr>
+	<tr>
+		<td>이름</td>
+		<td><input type="text" id="e_name" /></td>
+	</tr>
+	<tr>
+		<td>성별</td>
+		<td><input type="text" id="sex" /></td>
+	</tr>
+	<tr>
+		<td>주소</td>
+		<td><input type="text" id="addr" /></td>
+	</tr>
+</table>
+<input type="button" value="추가" onclick="fn_add()" />
+<input type="button" value="수정" onclick="fn_edit()" />
+<input type="button" value="삭제" onclick="fn_delete()" />
+
+
+
+</body>
+</html>
