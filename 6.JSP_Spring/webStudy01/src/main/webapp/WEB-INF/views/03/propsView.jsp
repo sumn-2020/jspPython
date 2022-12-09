@@ -20,6 +20,17 @@
 
 
 <h4> properties 파일 뷰어 </h4>
+
+<label>
+	<input type="radio" name="dataType" value="json" checked />JSON
+</label>
+<label>
+	<input type="radio" name="dataType" value="xml"  />XML
+</label>
+
+
+<button type="button" class="loadData">LOAD DATA</button>
+<button type="button" class="clearData">CLEAR DATA</button>
 <table border="1px">
 	<thead>
 		<tr>
@@ -27,41 +38,86 @@
 			<th>Value</th>
 		</tr>
 	</thead>
-	<tbody id="t_body">
+	<tbody id="listBody">
 	
 	</tbody>
 </table>
 
+
 <!-- Properties Controller Servlet  -->
 <script>
-	$.ajax({
-		dataType : "json", 
-		success : function(resp) { 
-			console.log(resp)
-			var html = "";
-			
-			//resp속에 내용물 있는 거 전부 토해내기 
-			$.each(resp,function(index, file){
-				let list = resp[index];
-				html += `
-					<tr>
-						<td>\${list.key}</td>
-						<td>\${list.value}</td>
-					</tr>
-				`
-			});
-			
-			
-			console.log(html);
-			var tBody = document.querySelector('#t_body');
-			tBody.innerHTML =  html;
+
+  let listBody = $('#listBody');
+  let dataTypes = $("[name=dataType]");
+  
+  
+  
+  let makeTrTag = function(name, value) {
+	  let tr = $("<tr>").append(
+              $("<td>").html(name)      
+             ,$("<td>").html(value)      
+     );
+	  return tr;
+  }
+  
+  
+  
+  let fn_sucesses = {
+		
+		json : function(resp) {
+			 let trTags = [];
+	         $.each(resp, function(name, value) {
+	            /* let tr = $("<tr>").append(
+	                     $("<td>").html(name)      
+	                    ,$("<td>").html(value)      
+	            ); */
+	            //trTags.push(tr); 
+	            trTags.push(makeTrTag(name, value));
+	         });
+	         listBody.empty(); // 자식들을 지우는 함수
+	         listBody.append(trTags);			
 		},
-		error : function(jqXHR, status, error) {
-
+		xml : function(comResp) { //comResp => dom 가져옴 
 			
-		}
+			let root = $(comResp).find("Properties")  //Properties라는 엘리먼트를 찾는다 
+			let trTags = []; //한건한건의 tr들을 모아놓는 곳 
+			root.children().each(function(idx, child) {
+				//console.log(child.tagName);
+				//console.log(child.innerHTML);
 
-	});
+				let name = child.tagName;
+				let value = child.innerHTML;
+				let tr = makeTrTag(name, value); //한건한건의 tr들을 받아서 
+				trTags.push(tr);//trTags에 넣어주기 
+				
+			});
+	        listBody.empty(); // 자식들을 지우는 함수
+	        listBody.append(trTags);	
+		}
+		  
+  }
+  
+  
+  let btn = $(".loadData").on("click", function() {
+	   let dataType  = dataTypes.filter(":checked").val();
+	   $.ajax({
+		   
+		      /* url -> 이 요청이 servlet에게 넘어간다는 말씀! */
+		      /* 응답데이터와 관련된 설정들 */
+		      dataType : dataType,
+		      success : fn_sucesses[dataType],
+		      error : function(jqXHR, status, error) {
+		         console.log(jqXHR);
+		         console.log(status);
+		         console.log(error);
+		      }  
+		});  
+  });
+
+  let clearBtn = $('.clearData').on("click", function() {
+	  listBody.empty();  
+  });
+
 
 
 
