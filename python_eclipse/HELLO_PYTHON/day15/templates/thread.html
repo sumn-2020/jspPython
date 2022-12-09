@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>thread</title>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+
+function fn_num() {
+	axios.post('/ajax_thread1', {})
+	.then(function (response) {
+		for(var i = 1; i<= 100000; i++) {
+			console.log(i);
+		}
+	});
+}
+
+function fn_ascii() {
+	axios.post('/ajax_thread2', {})
+	.then(function (response) {
+		for(var i = 1; i<= 100000; i++) {
+			console.log(String.fromCharCode(i)); //아스키코드로 변환하기 
+		}
+	});
+}
+
+function fn_main() {
+	/* axios.post('/ajax_thread1', {})
+	.then(function (response) {
+	}); */
+	fn_num();
+	fn_ascii();
+	
+}
+</script>
+
+
+
+
+</head>
+
+
+<body onload="fn_main()">
+
+	
+	
+
+</body>
+</html>

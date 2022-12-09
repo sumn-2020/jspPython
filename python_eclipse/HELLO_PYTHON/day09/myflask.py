@@ -33,10 +33,6 @@ def post():
 
 # @app.route('/sample')
 # def sample():
-#
-#
-#
-#
 #     txt = """
 #
 #     """
@@ -75,24 +71,11 @@ def view():
     
         {'col01' : '1', 'col02' : '1', 'col03' : '1'},
         {'col01' : '2', 'col02' : '2', 'col03' : '2'}
-    
     ]
     
 
     
     return render_template('view.html', a=a, b=b, c=c)
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
