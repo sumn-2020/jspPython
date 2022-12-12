@@ -31,13 +31,13 @@ public class PropertiesControllerServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		
-		//요청분석
+		//1. 요청분석
 		String accept = req.getHeader("Accept"); //   */* html json xml ... 
 		
 		
 		//모델 확보
 		Object target = service.retrieveData();
-		//모델 공유
+		//모델 공유(다른 것들이 target을 가져다 쓸수 있도록 준비 )
 		req.setAttribute("target", target); //json, xml 각각의 마샬링메소드로 보내기 위한 코드 
 		
 		
@@ -50,7 +50,7 @@ public class PropertiesControllerServlet extends HttpServlet {
 			
 		}else if(accept.toLowerCase().contains("json")) {
 			
-			path = "/jsonView.do";  //MarchallingJsonViewServlet 에 있는 서비스로 이동하는 소스 
+			path = "/jsonView.do";  //service에서 받아온 내용이 json이다? 그럼 일단 마샬링을 통해서 번역 필요 (  MarchallingJsonViewServlet 에 있는 서비스로 이동하는 소스)
 			
 
 		}else if(accept.toLowerCase().contains("xml")) {

@@ -1,27 +1,32 @@
 package kr.or.ddit.servlet04.service;
 
-import java.io.InputStream;
-import java.util.Properties;
 
-import kr.or.ddit.servlet01.DescriptionServlet;
-
-public class CalculateServiceImpl implements PropertiesService {
+public class CalculateServiceImpl implements CalculateService {
 
 	@Override
-	public Properties retrieveData() {
-		
-		Properties properties = new Properties();
-	
-		try (
-			InputStream is = DescriptionServlet.class.getResourceAsStream("/kr/or/ddit/props/DataStore.properties");	
-		){
-			properties.load(is);
-		
-		}catch(Exception e) {
-			throw new RuntimeException(e); 
-		}
-		
-		return properties;
+	public int plus(int a, int b) {
+		int result = a + b;
+		return result;
 	}
+
+	@Override
+	public int minus(int a, int b) {
+		int result = a - b;
+		return result;
+	}
+
+	@Override
+	public int multiply(int a, int b) {
+		int result = a * b;
+		return result;
+	}
+
+	@Override
+	public int divice(int a, int b) {
+		int result = a / b;
+		return result;
+	}
+
+
 
 }

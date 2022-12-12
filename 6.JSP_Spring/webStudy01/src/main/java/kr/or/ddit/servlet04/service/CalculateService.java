@@ -4,7 +4,12 @@ import java.util.Properties;
 
 public interface CalculateService {
 	
-	public Properties retrieveData();
+//	public Properties retrieveData();
+	
+	public int plus(int a, int b);
+	public int minus(int a, int b);
+	public int multiply(int a, int b);
+	public int divice(int a, int b);
 	
 	
 }
