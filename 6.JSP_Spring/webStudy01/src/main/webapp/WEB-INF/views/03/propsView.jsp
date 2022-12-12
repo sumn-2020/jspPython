@@ -64,7 +64,12 @@ let fn_sucesses = {
 	json : function(resp) { //뒷단에서 response 내용물들을 받아와서 
 		
 		let trTags = [];
-		$.each(resp, function(name, value){ //resp 내용물이 끝날때까지 반복 
+		//console.log(resp.target.prop5);
+	
+		/* $.each(resp, function(name, value){ //resp 내용물이 끝날때까지 반복 
+			trTags.push(makeTrTag(name, value)); //trTags 배열 안에 넣기 (resp안에 name과 value쌍인 내용물이 있겠지? 그걸 받아와서 각각 name과 value에 넣는다)
+		}); */
+		$.each(resp.target, function(name, value){ //resp 내용물이 끝날때까지 반복 
 			trTags.push(makeTrTag(name, value)); //trTags 배열 안에 넣기 (resp안에 name과 value쌍인 내용물이 있겠지? 그걸 받아와서 각각 name과 value에 넣는다)
 		});
 		listBody.empty();
@@ -73,7 +78,8 @@ let fn_sucesses = {
 	},
 	xml: function(comResp) { 
 		
-		let root = $(comResp).find("Properties"); //xml 태그 제일 상단에 있는 <Properties></Properties>태그 찾기 
+		//let root = $(comResp).find("Properties"); //xml 태그 제일 상단에 있는 <Properties></Properties>태그 찾기 
+		let root = $(comResp).find("target"); //xml 태그 제일 상단에 있는 <Properties></Properties>태그 찾기 
 		let trTags = [];
 		root.children().each(function(idx, child){  //<Properties>태그 자식들에 각각 다 적용됨 
 			
@@ -91,21 +97,18 @@ let fn_sucesses = {
 
 
 let btn = $(".loadData").on("click", function() {
-	
 	let dataType = dataTypes.filter(":checked").val();
 	$.ajax({
-		   
-	      /* url -> 이 요청이 servlet에게 넘어간다는 말씀! */
-	      dataType : dataType,
-	      success : fn_sucesses[dataType],
-	      error : function(jqXHR, status, error) {
-	         console.log(jqXHR);
-	         console.log(status);
-	         console.log(error);
-	      }  
+		  
+      /* url -> 이 요청이 servlet에게 넘어간다는 말씀! */
+      dataType : dataType,
+      success : fn_sucesses[dataType],
+      error : function(jqXHR, status, error) {
+         console.log(jqXHR);
+         console.log(status);
+         console.log(error);
+      }  
 	});
-	
-	
 	
 });
 

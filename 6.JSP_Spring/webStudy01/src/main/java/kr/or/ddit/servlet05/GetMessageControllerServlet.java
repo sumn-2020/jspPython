@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -13,12 +14,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.RequestWrapper;
-import javax.xml.ws.ResponseWrapper;
-
-import jdk.nashorn.internal.parser.JSONParser;
-import kr.or.ddit.servlet01.DescriptionServlet;
-
 
 
 
@@ -26,8 +21,6 @@ import kr.or.ddit.servlet01.DescriptionServlet;
 public class GetMessageControllerServlet extends HttpServlet {
 	
 	
-
-
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
@@ -43,22 +36,34 @@ public class GetMessageControllerServlet extends HttpServlet {
 		}else { //자연발생한 locale
 			clientLocale = req.getLocale(); //Accept-lanuage header로 결정됨 
 		}
+		
+		
+		//name이라는 파라미터는 반드시 넘어와야됨
+		String name = req.getParameter("name");// 넘어온 파라미터 값이   "ㅇㅁㄴㅇㅁㄴㅇㅁㄴㅇ" //prop1 key값
+		if(name==null || name.isEmpty()) {//잘못된 요청일 경우
+			resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return; //밑으로 더 이상 읽으면 안된다. 
+		}
 
+		//2. 모델확보 
+		Object message = null;
+		try {
+			message = retrieveMessage(clientLocale , name); //retrieveMessage(clientLocale , "ㅇㅁㄴㅇㅁㄴㅇㅁㄴㅇ")  //message 안에는 결국 value값 만 들어있음
+		}catch(MissingResourceException e) { //찾으려고 하는 자원이 없음 (니가 찾으려고 하는 값은 우리 서버에 없다) = > 상태코드 404
+			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+			return;
+		}
 		
-		//2. 모델확보 ()
-		Object message = retrieveMessage(clientLocale);
-		
+
 		//3. 모델공유(setAttribute)
 //		{"message" : "HELLO"}
 //		vo를 대신할 수 있는 것(지금 이 샘플에서는 vo 안쓰고 있으므로 map으로!) : Map 
 //		Map<String, Object> target =   Collections.singletonMap("message" , message); // 마샬링뷰에서 이미 Map을 만들고있으므로 따로 만들필요 없음
 		req.setAttribute("message", message);
 		
-		
 		//4. 뷰선택 : 어떤 뷰를 사용할 것인가는 accept를 통해서 정해짐 
 		String viewName = null;
 		int statusCode = HttpServletResponse.SC_OK; //성공적으로 출력됐을 경우 : 200
-		
 		
 		if(accept.contains("json")) {
 			viewName = "/jsonView.do"; // MarchallingJsonViewServlet
@@ -71,7 +76,6 @@ public class GetMessageControllerServlet extends HttpServlet {
 			statusCode = HttpServletResponse.SC_NOT_ACCEPTABLE; // 이도 저도 아닌 경우 : 406
 		}
 
-
 		//5. 뷰로 이동
 		if(statusCode == HttpServletResponse.SC_OK) { //성공이거나 
 			//5. 뷰로 이동
@@ -79,14 +83,14 @@ public class GetMessageControllerServlet extends HttpServlet {
 		}else {//아니거나 => 문제가 생겼다는 것을 클라이언트한테 보내줘야됨
 			resp.sendError(statusCode);
 		}
-		
-
 	}
+	
 
-	private Object retrieveMessage(Locale clientLocale) {
-		String baseName = "kr.or.ddit.props.Message";//webStudy01/src/main/resources/kr/or/ddit/props/Message_en.properties
+
+	private Object retrieveMessage(Locale clientLocale, String name) { // name : key값
+		String baseName = "kr.or.ddit.props.Message"; //webStudy01/src/main/resources/kr/or/ddit/props/Message_en.properties
 		ResourceBundle bundle = ResourceBundle.getBundle(baseName, clientLocale);
-		return bundle.getString("hi");
+		return bundle.getString(name); //key(name)에 해당하는 value값 리턴 
 	}
 	
 

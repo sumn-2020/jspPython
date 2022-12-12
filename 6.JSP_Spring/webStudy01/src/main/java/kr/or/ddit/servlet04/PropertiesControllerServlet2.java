@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.ServletException;
@@ -24,8 +22,8 @@ import kr.or.ddit.servlet04.service.PropertiesService;
 import kr.or.ddit.servlet04.service.PropertiesServiceImpl;
 
 
-@WebServlet("/03/props/propsView.do")
-public class PropertiesControllerServlet extends HttpServlet {
+@WebServlet("/03/props/propsView3.do")
+public class PropertiesControllerServlet2 extends HttpServlet {
 	
 	private PropertiesService service = new PropertiesServiceImpl(); //컨트롤러가 servlet04 > service > PropertiesService.java 서비스를 사용할수있도록가져옴 
 
@@ -35,7 +33,7 @@ public class PropertiesControllerServlet extends HttpServlet {
 		
 		//1. 요청분석
 		String accept = req.getHeader("Accept"); //   */* html json xml ... 
-	
+		
 		
 		//모델 확보
 		Object target = service.retrieveData();
