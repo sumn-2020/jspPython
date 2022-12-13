@@ -32,7 +32,7 @@ public class GetMessageControllerServlet extends HttpServlet {
 		Locale clientLocale = null;
 		if(locale != null) { //의도한 locale (파라미터에 띄워지는 locale)
 //			ko, en : lanuage tag, locale code
-			clientLocale = Locale.forLanguageTag(locale);	
+			clientLocale = Locale.forLanguageTag(locale);	 //Locale.KOREAN.toLanguageTag() 이게담기는 거임
 		}else { //자연발생한 locale
 			clientLocale = req.getLocale(); //Accept-lanuage header로 결정됨 
 		}

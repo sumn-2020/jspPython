@@ -29,7 +29,7 @@ public class GetServerTimeControllerServlet extends HttpServlet {
 //		파라미터 locale에 따라 locale객체가 달라져야함
 		Locale clientLocale = req.getLocale(); //기본 locale은 클라이언트거 따라가야하므로 req.getLocale써야됨
 		if(localeParam != null && !localeParam.isEmpty()) { // localeParam에 파라미터가 있다면 
-			clientLocale = Locale.forLanguageTag(localeParam);
+			clientLocale = Locale.forLanguageTag(localeParam); //Locale.KOREAN.toLanguageTag() 이게담기는 거임
 		}
 
 
@@ -43,16 +43,16 @@ public class GetServerTimeControllerServlet extends HttpServlet {
 		
 		
 		//모델공유
-		req.setAttribute("now", nowStr); //toString을 추가함으로써 우리한테 익숙한 시간이 출력됨
-		req.setAttribute("message", nowStr); //plainView.jsp
-		resp.setHeader("Refresh", "1");
+		req.setAttribute("now", nowStr); //(for json선택) toString을 추가함으로써 우리한테 익숙한 시간이 출력됨
+		req.setAttribute("message", nowStr); //(for plain선택) plainView.jsp
+		resp.setHeader("Refresh", "1"); //1초마다 새로고침
 		
 		
 //		헤더 accept에 따라 viewName이 달라져야함 
 		String viewName = null;
 		if(accept.contains("json")) { //accept에 json이 포함되어있다면 json으로 마샬링을 하겠다
 			 viewName = "/jsonView.do"; //마샬링을 통해서 jsp로 전달가능함 
-		}else if(accept.contains("plain")) { 
+		}else if(accept.contains("plain")) { //plain은 마샬링 필요 없음 
 			viewName = "/WEB-INF/views/04/plainView.jsp"; 
 		}else { //기본적으로 주어지는 오류. 위에 것들은 개발자가 오류 코드 따로 지정해줘야됨 
 			resp.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, accept + "mime은 생성할 수 없음");

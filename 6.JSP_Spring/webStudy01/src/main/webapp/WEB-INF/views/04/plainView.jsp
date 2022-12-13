@@ -4,3 +4,4 @@
     
 
 ${message}
+<%-- req.setAttribute("message", nowStr);  --%>
