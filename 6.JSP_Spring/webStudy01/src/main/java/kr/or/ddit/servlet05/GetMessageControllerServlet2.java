@@ -22,7 +22,7 @@ import kr.or.ddit.servlet01.DescriptionServlet;
 
 
 
-@WebServlet("/04/getGreetingMessage")
+@WebServlet("/04/getGreetingMessage3")
 public class GetMessageControllerServlet2 extends HttpServlet {
 	
 	

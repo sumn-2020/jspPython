@@ -40,8 +40,8 @@ public class GetMessageControllerServlet extends HttpServlet {
 		
 		//name이라는 파라미터는 반드시 넘어와야됨
 		String name = req.getParameter("name");// 넘어온 파라미터 값이   "ㅇㅁㄴㅇㅁㄴㅇㅁㄴㅇ" //prop1 key값
-		if(name==null || name.isEmpty()) {//잘못된 요청일 경우
-			resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+		if(name==null || name.isEmpty()) {//잘못된 요청일 경우 잘못된 파라미터 값을 가져왔을 경우 
+			resp.sendError(HttpServletResponse.SC_BAD_REQUEST); //400에러(05 > responseDesc.jsp)
 			return; //밑으로 더 이상 읽으면 안된다. 
 		}
 
