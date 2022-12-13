@@ -34,7 +34,6 @@
 
 
 			init(); 
-			animate();
 
 			function init() {
 
@@ -71,33 +70,27 @@
 			}
 
 	
-			function animate() {
-				requestAnimationFrame(animate);
-				renderer.render( scene, camera );
-			}
-
-
 
 			//movement 
 			document.addEventListener("keydown", onDocumentKeyDown, false);
 			function onDocumentKeyDown(e) {
-				//console.log(e.keyCode);
-
-				var key = e.key;
-
-				if(key == 'ArrowUp') {
+				console.log(e.keyCode);
+				if(e.keyCode == 38) {
 					mesh.position.z -= 20;
-				}else if(key == 'ArrowDown') {
+				}else if(e.keyCode == 40) {
 					mesh.position.z += 20;
-				}else if(key == 'ArrowRight') {
+				}else if(e.keyCode == 39) {
 					mesh.position.x += 20;
-				}else if(key == 'ArrowLeft') {
+				}else if(e.keyCode == 37) {
 					mesh.position.x -= 20;
 				}
+				renderer.render( scene, camera );
 			}
-			
+			renderer.render( scene, camera );
 
-			
+
+
+
 
 
 
