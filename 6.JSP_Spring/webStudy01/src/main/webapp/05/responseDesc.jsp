@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8" buffer="8kb"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,7 +12,7 @@
 <pre>
 	Http의 response packaging
 	1. Response Line   : Status Code(응답상태코드, XXX)
-		100상태코드~     : .... ing ....
+		100상태코드~     : .... ing .... ( 웹소켓 )
 		200상태코드~     : OK
 		300상태코드~     : 최종 처리하기 위해 클라이언트의 추가 액션이 필요함. (response body가 없음)
 		   304(cache data관련) : Not Modified 
@@ -26,7 +26,7 @@
 		    	response.sendRedirect(location);  
 		   %> --%>
 
-		400상태코드~     : Client side error -> Fail
+		400상태코드~     : "Client" side error -> Fail
 			   400     : <%=HttpServletResponse.SC_BAD_REQUEST %>, 클라이언트 전송 데이터(파라미터) 검증시 활용  <!-- 필수파라미터가 안넘어왔을 때/잘못넘어왔을때  -->
 			   401/403 : 인증(Authentication, 신원확인)과 인가(Authorization, 신원확인을 거친 자에게 어떤 권한을 주는 것) 기반의 접근 제어에 활용	
 			   			 <%=HttpServletResponse.SC_UNAUTHORIZED %>, <%= HttpServletResponse.SC_FORBIDDEN %>
@@ -39,7 +39,7 @@
 			   			 <%=HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE %> : Content-Type request 헤더를 해석할 수 없을 때 
 			   			 ex) content-type : application/json -> umarshalling(XXX)
 			
-		500상태코드~     : Server side error -> Fail, 500(Internal Server Error)
+		500상태코드~     : "Server" side error -> Fail, 500(Internal Server Error)
 		
 	2. Reponse Header : meta data
 	   Content(body)에 대한 부가정보 설정          : Content-*, Content-Type(MIME), Content-Length(size), Content-Disposition(content name, 첨부여부)

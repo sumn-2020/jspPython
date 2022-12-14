@@ -25,7 +25,7 @@
 </head>
 <body>
 
-<!--  	/* GetServerTimeControllerServlet */    -->
+ GetServerTimeControllerServlet 
 
 <h4>Refresh 헤더 활용</h4>
 <%--

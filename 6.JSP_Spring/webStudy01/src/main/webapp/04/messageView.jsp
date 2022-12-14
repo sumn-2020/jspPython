@@ -15,7 +15,7 @@
 
 <!--  Message_ko.properties  / GetMessageControllerServlet  -->
 
-
+<!-- GetMessageControllerServlet -->
 <select id="selName">
  	<option>prop1</option>
 	<option>prop2</option>

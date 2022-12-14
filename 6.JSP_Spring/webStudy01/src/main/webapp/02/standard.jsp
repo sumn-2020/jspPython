@@ -2,21 +2,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
   
-  
- 
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
 
-<style>
-/*comment */
-</style>
+standard.jsp
+
+	<h4>request parameter param1 : <%=request.getParameter("param1") %></h4>
+	<h4>request attribute attr1 : <%=request.getAttribute("attr1") %></h4>
+	<h4>session attribute attr2 : <%=session.getAttribute("attr2") %></h4>
 
 
-</head>
-<body>
 
 	<h4>JSP spec</h4>
 	<pre>
@@ -75,8 +68,6 @@
 	<script>
 // 	comment
 		console.log("body 랜더링 완료 ");
+		console.log($("body"));
 	</script>
 
-
-</body>
-</html>

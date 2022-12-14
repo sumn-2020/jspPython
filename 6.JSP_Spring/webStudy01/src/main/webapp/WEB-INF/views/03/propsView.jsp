@@ -18,6 +18,8 @@
 <%-- <img src="<%= request.getContextPath() %>/resources/images/cat1.jpg" />--%>
 
 
+<!--PropertiesControllerServlet  -->
+
 
 <h4> properties 파일 뷰어 </h4>
 
