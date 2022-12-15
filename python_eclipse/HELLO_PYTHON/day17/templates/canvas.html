@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>캔버스</title>
+   
+
+</head>
+<body>
+<canvas id="myCanvas" width="1000" height="1000"></canvas>
+
+	<script>	
+	 //1. canvas 엘리먼트 취득
+    const canvas = document.getElementById('myCanvas');
+ 	// 2. 2d모드의 그리기 객체 취득
+    const ctx = canvas.getContext("2d");
+ 	
+ 	//그리기 시작 
+    ctx.beginPath();
+ 	
+ 	
+ 	
+    rec1 = ctx.fillRect(25, 25, 100, 100); // rectancle 1 그리기
+    ctx.fillRect(250, 25, 100, 100); // rectancle 2 그리기
+    ctx.fillRect(25, 300, 100, 100); // rectancle 3 그리기
+    ctx.fillRect(250, 300, 100, 100); // rectancle 4 그리기
+    ctx.arc(190, 200, 50, 50, Math.PI * 50); //circle 그릭 
+    
+
+ 	
+    // 원 내부 색 채우기
+    ctx.fillStyle = 'blue';
+    ctx.fill();
+
+   
+
+    
+    
+    
+    
+
+ 
+ 
+	
+	
+
+	
+	</script>
+</body>
+</html>

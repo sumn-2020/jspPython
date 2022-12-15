@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Room</title>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+	<script>	
+    var sock; 
+    function fn_init() {
+       sock = io.connect('http://192.168.35.32:9999');  //sock => 웹소캣의 객체 , http://127.0.0.1:9999여기 연결 
+          sock.on('connect', function(){
+              console.log("I connect");
+          });
+
+          sock.on('message', function(msg){ //받는거 
+             var info = msg.message;
+             var infos = info.split(":");
+             console.log(infos);
+             //'ready: 송지은' 형태 => [1]번째인 송지은만 들고감
+          if(infos[0] == "ready") {
+             rv_ready(infos[1]);   
+          }
+             //'다됐냐' 버튼 눌렀을 때 => [1]의 이름 부분 들고감
+          if(infos[0] == "isdone") {
+             rv_isdone(infos[1]);
+          }
+             
+          if(infos[0] == "done") {
+             rv_done(infos[1]);
+          }            
+          });
+    }
+    
+    
+    
+   function rv_done(user_name) {
+      var idx = checkUser(user_name);
+       var st_names = document.querySelectorAll(".st_name");
+       st_names[idx].style.backgroundColor = "blue";
+   }
+   
+   
+    
+//'다됐슈'버튼 눌렀을 때 user들 보내줌
+    function fn_done() {
+        var obj_it_name = document.querySelector("#it_name");
+       sock.send("done:" + obj_it_name.value);  //보내는 역할 
+    }
+    
+    
+    
+    
+    
+//'다됐냐'눌렀을 때 init에서 이름들만 옴. 이름들이 배열에 담김.
+    function rv_isdone(str_users) {
+       var arr_users = str_users.split(","); //이름들을 , 기준으로 잘라서 arr_users 여기에 넣어줌
+       users.splice(0,users.length);
+       for(var i=0; i<arr_users.length; i++) { //arr_users에 들어가있는 이름만큼 칸에 적용해줌
+          users.push(arr_users[i]);
+       }
+       console.log("users ",users);
+       
+       
+       var st_names = document.querySelectorAll(".st_name");
+       for(var i=0; i<st_name.length; i++) {
+          st_names[i].innerHTML = "__";
+          st_names[i].style.backgroundColor = "white";
+       }
+       for(var i=0; i<users.length; i++) {
+          st_names[i].innerHTML = users[i];
+          st_names[i].style.backgroundColor = "red";
+       }        
+    }
+
+
+    //적힌 이름 중복 없애기
+    var users = [];
+    function checkUser(user_name) {
+       for(var i=0; i<users.length; i++) {
+          if(users[i] == user_name ) {
+             return i;
+          }
+       }
+       return -1;
+    }
+    
+    
+    
+    
+    //들고온 '송지은'을 가지고
+    function rv_ready(user_name) {
+       var idx = checkUser(user_name); //중복체크함
+       
+       //중복체크한 값이 -1, 즉 없는 사람이면 배열에 넣어줌
+       if(idx == -1) {
+          users.push(user_name);
+       }
+       
+       //st_name. 이름 적는 칸에 적힌 값을 가져오기.
+       var st_names = document.querySelectorAll(".st_name");
+       for(var i=0; i<users.length; i++) {
+          st_names[i].innerHTML = users[i];
+       }
+    }
+	      
+      //'다됐냐'버튼 눌렀을 때 user들 보내줌
+      function fn_isdone() {
+         sock.send("isdone:" + users);  //보내는 역할 
+         
+      }
+      
+	      
+
+		
+		
+	      
+	  //유저들이 이름 입력하고 'ready' 버튼 눌렀을 때 
+      function fn_ready() {
+          var obj_it_name = document.querySelector("#it_name");
+          var myname = obj_it_name.value;
+        	  
+          const regex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$/;
+      	  console.log(regex.test("한글"));
+      	  if(!regex.test(myname)){
+      		  return;
+      	  }
+      	  if(myname.length != 3) {
+      		  return;
+      	  }
+
+      	  
+          sock.send("ready:" + obj_it_name.value);  //보내는 역할 
+       }
+		
+		
+		
+		
+	
+	</script>
+</head>
+<body onload="fn_init()">
+
+
+	<input type="text" id="it_name" style="width: 60px;"   />
+	<input type="button" value="READY" onclick="fn_ready()" />
+	<input type="button" value="다됐슈" onclick="fn_done()" />
+	
+	<br>
+
+
+	<table border="1" style="width: 200px;">
+		<tbody>
+			<tr>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+			</tr>
+			<tr>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+			</tr>
+			<tr>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+			</tr>
+			<tr>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+			</tr>
+			
+			<tr>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+			</tr>
+			<tr>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+				<td class="st_name">___</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	
+	<input type="button" value="다됐냐" onclick="fn_isdone()"   />
+	
+
+</body>
+</html>
