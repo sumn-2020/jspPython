@@ -29,7 +29,7 @@ $(document).ready(function() {
 		
 		let url = this.action;
 		let method = this.method;
-		let data = $(this).serialize();
+		let data = $(this).serialize(); //form에 들어있는 데이터를 지가 알아서 직렬화 해줌 
 		//url : http://localhost/webStudy01/02/factorialForm.jsp
 		console.log("url : " + url);
 		//method : get

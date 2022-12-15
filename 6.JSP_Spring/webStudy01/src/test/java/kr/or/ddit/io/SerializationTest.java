@@ -25,6 +25,10 @@ import kr.or.ddit.vo.MemoVO;
  * Serialization(직렬화)
  * 	: 전송이나 저장을 위해 객체의 상태를 바이트 배열로 변환하는 과정 
  *
+ *
+ * 객체의 상태를 통으로 저장한다 - 직렬화
+ * 객체의 상태를 통으로 복원한다 - 역직렬화
+ *
  */
 public class SerializationTest {
 	
@@ -55,10 +59,7 @@ public class SerializationTest {
 	}
 	
 
-	
-	//직렬화 vs 마샬링?
-	//직렬화 vs 역직렬화?
-	
+
 
 //	@Test
 	//직렬화 
