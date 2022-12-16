@@ -7,28 +7,15 @@
 <title>Insert title here</title>
 
 <jsp:include page="/includee/preScript.jsp"></jsp:include>
-<script src="<%=request.getContextPath() %>/resources/js/custom.js"></script>
-
-
-
 
 </head>
 <body>
-serializeObject.js
 factorialForm.jsp
 MemoControllerServlet
 <h4>Restful 기반의 메모관리</h4>
 
-
-<!--
-
-form : 동기요청을 발생시킨다. 
-submit를 통해서 
-
-  -->
-<form name="memoForm" action="${pageContext.request.contextPath}/memo" method="post">
+<form action="${pageContext.request.contextPath}/memo" method="post" id="insert_form">
 	<input type="text" name="writer" placeholder="작성자" />
-	<!-- <input type="text" name="writer" placeholder="작성자" /> --> <!-- 작성자 태그가 두개일 경우 custom.js line25줄 참고   -->
 	<input type="date" name="date" placeholder="작성일" />
 	<textarea name="content"></textarea>
 	<input type="submit" value="등록" />
@@ -70,65 +57,8 @@ submit를 통해서
 
 <script>
 
-/*
-일반객체 : let memoForm = this;
-jquery객체 :let memoForm = $(document.memoForm).on("submit",function(event) {/
-*/
-
-//	$('[name="memoForm"]')
-	let memoForm = $(document.memoForm).on("submit",function(event) {//document.memoForm : document에 있는 memoForm 이라는 name을 가지고 있는 태그 찾기 <form name="memoForm">
-		event.preventDefault();	
-		//this== event.target 
-		//$(this) == $(document.memoForm)
-		let url = this.action; //this에서 action을 꺼내온다.
-		let method = this.method;
-		
-		//1. 직렬화해서 파라미터로 보내는 방식
-//		let data = $(this).serialize(); //writer=작성자&date=작성일&content=내용(=> QueryString)
-//		let memoForm = this; //일반 객체 
 
 
-		//2. 제리쿼리 객체를 이용해서 json으로 보내는 방식 
-		let data = $(this).serializeObject(); //custom.js에서 만들어준 function들고옴 
-		//serialize를 사용하지 않고 json으로 (비동기로) 파라미터 넘길때 사용하는 방식  
-/* 		{
-			writer: "", //form.name : "form.value"
-			date : "",
-			content: ""
-		} */
-		
-		
-		
-		$.ajax({
-			url : url,
-			method : method,
-			contentType: "application/json;charset=UTF-8", //request의 content-type을 결정하기 (보내는 편지의 type을 결정하기 )
-/* 			data : { //뒷단으로 넘어갈땐 파라미터 형태로 넘어가게됨 => 직렬화 과정을 거치게 됨 
-				writer: "",
-				date : "",
-				content: ""
-			},  */
-			//data : data, //직렬화방식으로 넘길경우는 이렇게만 해줘도 되지만 
-			data : JSON.stringify(data), //직렬화 말고 제이쿼리 객체를 통해서 뒷단으로 넘길땐  data를  마샬링 해줘야됨 ㄴ 
-			dataType : "json", //request Accept , response content-type
-			success : function(resp) { //요청처리에 성공했을 경우 
-				makeListBody(resp.memoList)
-				//this //=> ajax 그 자체
-				
-				//등록 후 input 박스 내용 clear시키기 
-				//memoForm.reset(); //(일반 객체 )let memoForm = this;으로 사용했을 경우    
-				memoForm[0].reset(); //(제이쿼리 객체)let memoForm = $(document.memoForm).on("submit",function(event) 으로 사용했을 경우 
-			},
-			error : function(jqXHR, status, error) {
-				console.log(jqXHR);
-				console.log(status);
-				console.log(error);
-			}
-
-		});
-		return false; // submit 동작 금지 
-		 
-	});  
 
 
 	
@@ -204,7 +134,25 @@ $.ajax({
 });
 
 
-
+//submit 버튼을 누르면 넘기는거 금지 => 요청을 비동기로 바꾸기
+$('#insert_form').on('submit', function(event) {
+	event.preventDefault();  //제출(=동기요청, 페이지 넘기는거)을 하려다가 못함 
+	
+	let data = $(this).serialize();  //form에 들어있는 데이터를 지가 알아서 직렬화 해줌 
+	//let data = $(this);
+	console.log(data);
+	
+	
+	$.ajax({
+		url : "${pageContext.request.contextPath}/memo",  //컨트롤러한테 요청 
+		method : "post", 
+		data : data,  //뒷단으로 보낼 데이터 (내가 작성한 데이터 )
+		dataType : "json",
+		success : function(resp) { //요청처리에 성공했을 경우 
+			makeListBody(resp.memoList);
+		}
+	});
+});
 
 
 

@@ -1,4 +1,5 @@
 
+<%@page import="kr.or.ddit.enumpkg.OperatorType"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -8,23 +9,40 @@
 <title>사칙연산기 - background로 돌아가는</title>
 
 <script src="<%=request.getContextPath() %>/resources/js/jquery-3.6.1.min.js"></script>
-
+<script src="<%=request.getContextPath() %>/resources/js/custom.js"></script>
 
 
 </head>
 
 <body>
 
+
+CalculateVO
+CalculateServlet
+OperatorType
+RealOperator
+
 <input type="radio" name="dataType" value="json" />JSON
 <input type="radio" name="dataType" value="xml" />XML
 
-<form method="post">
+
+<!-- action이 없을 경우: 이때 action은 서블릿 주소   -->
+<form method="post" id="calForm">
 	<input type="number" name="leftOp" placeholder="좌측피연산자">
 	<select name="operator">
 		<option value="PLUS">+</option>
-		<option value="MINUS">-</option>
+		<%
+			OperatorType[]  operators = OperatorType.values(); //OperatorType.java
+			//operators의 length는 4
+			for(OperatorType tmp : operators) {
+				%>
+					<option value="<%=tmp.name() %>"><%=tmp.getSign()%></option>
+				<% 
+			}
+		%>
+<!-- 		<option value="MINUS">-</option>
 		<option value="MULTIPLY">*</option>
-		<option value="DIVIDE">/</option>
+		<option value="DIVIDE">/</option> -->
 	</select>
 	<input type="number" name="rightOp" placeholder="우측피연산자">
 	<button type="submit" id="submit">=</button>
@@ -32,61 +50,47 @@
 
 <div id="resultArea">
 
-	2 + 2 = 4
 
 </div>
 
 
 
 
-
 <script>
-let resultArea = $('#resultArea');
-let dataTypes = $("[name=dataType]");
-let makeTrTag = function(name, value) {
-	let tr = $("<tr>").append( //<tr></tr>만들기
-					$("<td>").html(name), //<td>name</td>
-					$("<td>").html(value) //<td>value</td>
-			 );
-	return tr;
-	
-}
 
-let fn_sucesses = {
+	let resultArea = $("#resultArea");
+
+
+	$("#calForm").on("submit", function(event) {
+		event.preventDefault();
 		
-	json : function(resp) { //컨트롤러단에서 response 내용물들을 받아와서 
-		let trTags = [];
-		$.each(resp, function(name, value){ //resp 내용물이 끝날때까지 반복 
-			trTags.push(makeTrTag(name, value)); //trTags 배열 안에 넣기 (resp안에 name과 value쌍인 내용물이 있겠지? 그걸 받아와서 각각 name과 value에 넣는다)
+		
+		let url = this.action; 
+		let method = this.method;
+		let data = $(this).serializeObject();  /*  custom.js 직렬화하기   */
+		data.leftOp = parseInt(data.leftOp); //문자열을 숫자로 바꾸기 
+		data.rightOp = parseInt(data.rightOp); 
+		
+		$.ajax({
+			url : url, 
+			method : method, 
+			contentType : "application/json",
+			data : JSON.stringify(data),
+			dataType : "json", 
+			success : function(resp) { 
+				resultArea.html(resp.expression);
+			},
+			error : function(jqXHR, status, error) {
+				console.log(jqXHR);
+				console.log(status);
+				console.log(error);
+			}
+
 		});
-		resultArea.empty();
-		resultArea.append(trTags);
-
-	},
-	xml: function(comResp) { 
-	}
-	
-}
- 
-
-let btn = $('#submit').on("click",function (event) {
-	event.preventDefault();  //submit에 대한 기본 동작 없애기 
-	
-	let dataType = dataTypes.filter(":checked").val();
-	$.ajax({
-		   
-	      dataType : dataType,
-	      success : fn_sucesses[dataType],
-	      error : function(jqXHR, status, error) {
-	         console.log(jqXHR);
-	         console.log(status);
-	         console.log(error);
-	      }  
+		
+		
+		return false;
 	});
-	
-	
-});
-
 
 	
 

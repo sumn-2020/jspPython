@@ -65,7 +65,7 @@ public class FileSystemMemoDAOImpl implements MemoDAO {
 		return 1;
 	}
 	
-	
+	//파일시스템(가짜 DB)에 정보가 반영되는 로직
 	//누군가가 글을 쓸때마다 쓴 글을 모아서 memoTable에 써놔야됨 (=>직렬화해서 insertMemo에 출력시킴)
 	private void serializeMemoTable() {
 		try(
@@ -76,6 +76,18 @@ public class FileSystemMemoDAOImpl implements MemoDAO {
 		}catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public int updateMemo(MemoVO memo) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int deleteMemo(int code) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 	
