@@ -11,9 +11,7 @@ app = Flask(__name__)
 
 
 ### 자바 : {%    %}   /   파이썬: {{}}
-
-
-
+#example > exe01.html~exe09.html
 
 @app.route('/')
 @app.route('/three')

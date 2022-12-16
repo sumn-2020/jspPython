@@ -55,7 +55,7 @@
 				scene = new THREE.Scene();
 
 
-				//플에이어
+				//***플레이어***
 				const texture = new THREE.TextureLoader().load( 'tangtang/plane.png' );
 				var geometry = new THREE.BoxGeometry( 100, 10, 100 );
 				const material = new THREE.MeshBasicMaterial( { map: texture } );
@@ -65,7 +65,7 @@
 		
 				camera.lookAt(player.position);
 				
-				//적
+				//***적***
 				for(var i=0;i<xzs.length;i++){
 					var geometry = new THREE.BoxGeometry( 100, 10, 100 );
 					const texture = new THREE.TextureLoader().load( 'tangtang/bad.png' );
@@ -80,7 +80,7 @@
 				}
 			
 				
-				//렌더링
+				//***렌더링***
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
@@ -101,6 +101,7 @@
 			}
 			
 			
+			//애니메이션
 			var p_speed = 0; //플레이어속도
 			var b_speed = 10; //총알속도
 			var flag_ing = true; 
@@ -114,7 +115,7 @@
 			
 
 
-				//플레이어
+				//***플레이어***
 				var rad = player.rotation.y;
 				var s = Math.sin(rad)*p_speed; //Math.sin(rad) : 내가 보는 방향  / P_speed : 속도 
 				//console.log(s);
@@ -125,7 +126,7 @@
 				
 				
 				
-				//총알
+				//***총알***
 				for(var i=0;i<bullets.length;i++){
 					var rad = bullets[i].rotation.y;
 					var s = Math.sin(rad)*b_speed;
@@ -140,7 +141,7 @@
 
 
 
-				//적이 나를 따라오는 거
+				//***적이 나를 따라오는 거***
 				for(var i = 0; i<bads.length; i++) {
 				
 					var f_speed = 1.1; //적이 따라오는 속도
@@ -161,9 +162,7 @@
 					
 
 
-
-
-				//bads에 부딪히면 플레이어 게임오버  (거리측정)
+				//***bads에 부딪히면 플레이어 게임오버  (거리측정)***
 				for(var i = 0; i<bads.length; i++) {
 					var b = bads[i];
 					var bx = b.position.x;
@@ -183,11 +182,31 @@
 				}
 				
 				
+				//***적과 플레이어의 위치***
+				//적
+				var str_character_pos = "";
+				for(var i = 0; i<bads.length; i++) {
 				
-				camera.lookAt(player.position); //카메라위치 따라가기 
+					var b = bads[i];
+					var bx = parseInt(b.position.x);
+					var bz = parseInt(b.position.z);
+					
+					str_character_pos += "b." + bx + "." + bz + ","; //"b.-100.-100 ,  , p.0.0"
+				}
+				//플레이어
+				var ppx = parseInt(player.position.x);
+				var ppz = parseInt(player.position.z);
+				str_character_pos += "p." + ppx + "." + ppz  //"b.-100.-100 ,  , p.0.0"
+				console.log(str_character_pos); //b.-71.71,b.71.71,b.-71.-71,b.71.-71,p.0.0 => 이걸로 캔버스에 그림 그리면됨 
+				
+				
+				
+				
+				
+				//camera.lookAt(player.position); //카메라위치 따라가기 
 				renderer.render( scene, camera );
 				
-				//총알에 맞으면 bad 갯수 줄어들기 (거리측정)
+				//***총알에 맞으면 bad 갯수 줄어들기 (거리측정)***
 				for(var i = 0; i<bads.length; i++) {
 					for(var j = 0; j<bullets.length; j++) {
 						var ba = bads[i];
@@ -228,6 +247,9 @@
 				
 			}
 			
+			
+			
+			//이벤트
 			document.addEventListener("keydown", onDocumentKeyDown, false);
 			function onDocumentKeyDown(event) {
 				//console.log(event);
