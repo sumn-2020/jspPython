@@ -5,6 +5,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="main.css">
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
 		<style>
 			body {
 				color: #222;
@@ -26,10 +27,17 @@
 	<body>
 		<div id="info">
 			TANGTANG
-			<span>남은총알:</span><span id="span_cnt_bullet">10</span><br/>
-			<span>남은세균:</span><span id="span_cnt_bad">4</span><br/>
+			<div>
+				<span>남은총알:</span><span id="span_cnt_bullet">10</span><br/>
+				<span>남은세균:</span><span id="span_cnt_bad">4</span><br/>
+				
+				<input type="text" id="it_name" style="width:60px" />
+				<input type="button" value="READY" onclick="fn_ready()" />
+				<input type="button" value="START" onclick="fn_start()" />
+			</div>
 		</div>
 
+	
 		<!-- Import maps polyfill -->
 		<!-- Remove this when import maps will be widely supported -->
 		<script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
@@ -43,6 +51,10 @@
 			}
 		</script>
 
+		<script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+		<script>
+			var flag_ing = false;
+		</script>
 		<script type="module">
 
 			import * as THREE from 'three';
@@ -56,17 +68,19 @@
 			let camera, scene, renderer, player, face;
 
 			const api = { state: 'Running' };
-
-
+			
 			var bullets = [];
 			var bads = []; //악당
 			var xzs = [
-				{'x':-100	,'z':-100, 'y': -20 },
-				{'x':100	,'z':-100, 'y': -20 },
-				{'x':-100	,'z':80, 'y': -20 },
-				{'x':100	,'z':80, 'y': -20 }
+				{'x':-100	,'z':100,	'color':0xFF0000},
+				{'x':100	,'z':100,	'color':0xFFFF00},
+				{'x':-100	,'z':-100,	'color':0xA901DB},
+				{'x':100	,'z':-100,	'color':0xBDBDBD},
+				{'x':100	,'z':0,	'color':0xFF0000},
+				{'x':-100	,'z':0,	'color':0xFFFF00},
+				{'x':0	,'z':100,	'color':0xA901DB},
+				{'x':0	,'z':-100,	'color':0xBDBDBD}
 			];
-
 
 			function init() {
 
@@ -84,6 +98,7 @@
 				clock = new THREE.Clock();
 
 				// lights
+
 				const hemiLight = new THREE.HemisphereLight( 0xffffff, 0x444444 );
 				hemiLight.position.set( 0, 20, 0 );
 				scene.add( hemiLight );
@@ -93,7 +108,8 @@
 				scene.add( dirLight );
 
 				// ground
-				var mesh = new THREE.Mesh( new THREE.PlaneGeometry( 2000, 2000 ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: false } ) );
+
+				const mesh = new THREE.Mesh( new THREE.PlaneGeometry( 2000, 2000 ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: false } ) );
 				mesh.rotation.x = - Math.PI / 2;
 				scene.add( mesh );
 
@@ -103,6 +119,7 @@
 				scene.add( grid );
 
 				// model
+
 				const loader = new GLTFLoader();
 				loader.load( 'models/gltf/RobotExpressive/RobotExpressive.glb', function ( gltf ) {
 
@@ -117,30 +134,32 @@
 					console.error( e );
 
 				} );
+
+
+				// ====================================================
 				
+				var obj_cnt_bullet = document.querySelector("#span_cnt_bullet");
+				var obj_cnt_bad = document.querySelector("#span_cnt_bad");
 				
+				obj_cnt_bullet.innerHTML = parseInt(xzs.length*1.5);
+				obj_cnt_bad.innerHTML = xzs.length;
 				
-				//적
 				for(var i=0;i<xzs.length;i++){
-					var geometry = new THREE.BoxGeometry( 5, 5, 5 );
-					var texture = new THREE.TextureLoader().load( 'tangtang/bad.png' );
-					var material = new THREE.MeshBasicMaterial( { map: texture } );
-					mesh = new THREE.Mesh( geometry, material );
-					bads.push(mesh);
-					scene.add( mesh );
+					var geometry = new THREE.BoxGeometry( 5, 10, 5 );
+					const texture = new THREE.TextureLoader().load( 'tangtang/enemy.png' );
+					const material = new THREE.MeshBasicMaterial( { map: texture } );
+					var badd = new THREE.Mesh( geometry, material );
+					bads.push(badd);
+					scene.add( badd );
 				}
 				for(var i=0;i<xzs.length;i++){
 					bads[i].position.x = xzs[i].x;
 					bads[i].position.z = xzs[i].z;
 				}
 				
+				// ====================================================	
 				
 				
-				
-				
-				
-	
-
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
@@ -155,6 +174,10 @@
 
 			}
 
+			
+			var p_speed = 0; //플레이어속도
+			var b_speed = 10; //총알속도
+			
 			function createGUI( model, animations ) {
 
 				const states = [ 'Idle', 'Walking', 'Running', 'Dance', 'Death', 'Sitting', 'Standing' ];
@@ -281,16 +304,18 @@
 			var flag_ing = true; 
 
 			function animate() {
+			
+				var obj_it_name = document.querySelector("#it_name");
+				var myname = obj_it_name.value;
+			
+				requestAnimationFrame( animate ); // 중요! 무한 루프 걸어줌(딜레이 걸었다 그려줌 1초에 몇 프레임~)
+				if(!flag_ing){
+					return;
+				}
 
 				const dt = clock.getDelta();
 
 				if ( mixer ) mixer.update( dt );
-				requestAnimationFrame( animate );
-				
-				//console.log(player.rotation);
-				
-				
-				
 				
 				var rad = player.rotation.y+Math.PI;
 				var s = Math.sin(rad)*p_speed;
@@ -299,12 +324,27 @@
 				player.position.x += -s;
 				
 				
+
+				renderer.render( scene, camera );
+
+				stats.update();
 				
+				//총알
+				for(var i=0;i<bullets.length;i++){
+					var rad = bullets[i].rotation.y;
+					var s = Math.sin(rad)*b_speed;
+					var c = Math.cos(rad)*b_speed;
+					
+					bullets[i].position.z += c;
+					bullets[i].position.x += s;
 				
+				}
+				//console.log(rad,s,c,player.position);
+
 				//적이 나를 따라오는 거
 				for(var i = 0; i<bads.length; i++) {
 				
-					var f_speed = 0.5; //적이 따라오는 속도
+					var f_speed = 0.1; //적이 따라오는 속도
 				
 					var b = bads[i];
 					var bx = b.position.x;
@@ -319,20 +359,46 @@
 					b.position.z += dz;
 	
 				}
-				
-				
-				//총알
-				for(var i=0;i<bullets.length;i++){
-					var rad = bullets[i].rotation.y;
-					var s = Math.sin(rad)*b_speed;
-					var c = Math.cos(rad)*b_speed;
-					
-					bullets[i].position.z += -c;
-					bullets[i].position.x += -s;
-				
 
+				//bads에 부딪히면 플레이어 게임오버  (거리측정)
+				for(var i = 0; i<bads.length; i++) {
+					var b = bads[i];
+					var bx = b.position.x;
+					var bz = b.position.z;
+					var px = player.position.x;
+					var pz = player.position.z;
+					var r = Math.sqrt(((bx-px)*(bx-px)) + ((bz-pz)*(bz-pz)));//제곱근sqrt  => 루트(3의 제곱 + 4의 제곱) = 5
+					
+					if(r<10) { // 바이러스 크기 50, 플레이어 크기 50 더해서 나온 것. 
+						setTimeout('alert("게임오버")', 1); // 옛날부터 오류..
+//						sock.send("dead:" + myname);
+						//alert("게임오버"); alert 오류 => alert가 먼저 포커싱을 가져오는 문제가 있기때문에 settimeout을 이용해서 조금 alert를 딜레이 시켜둔 후 위에 소스를 출력먼저 하도록 만든다.
+						flag_ing = false;
+						p_speed = 0;
+						return;
+						//console.log("부딪혔음");
+					}
+				}
+						
+				var str_character_pos = "";
+				for(var i = 0; i<bads.length; i++) {
+					var b = bads[i];
+					var bx = parseInt(b.position.x);
+					var bz = parseInt(b.position.z);
+					str_character_pos += "b."+bx+"."+bz+",";
 				}
 				
+				var ppx = parseInt(player.position.x);
+				var ppz = parseInt(player.position.z);
+				str_character_pos += "p."+ppx+"."+ppz+"";
+				
+				console.log(str_character_pos);
+				
+//				sock.send("display:" + myname + ":" + str_character_pos); 
+
+
+				//camera.lookAt(player.position); //카메라위치 따라가기 
+				renderer.render( scene, camera );
 				
 				//총알에 맞으면 bad 갯수 줄어들기 (거리측정)
 				for(var i = 0; i<bads.length; i++) {
@@ -347,7 +413,7 @@
 
 						var r = Math.sqrt(((bax-bux)*(bax-bux)) + ((baz-buz)*(baz-buz)));
 						
-						if(r<100) {
+						if(r<10) {
 							console.log("부딪혔음");
 							scene.remove(ba); 
 							bads.splice(i,1);//bads의 i번째에서 1개 잘라줌
@@ -361,7 +427,8 @@
 							cnt_bad--; //텍스트 하나씩 줄어듬 
 							obj_cnt_bad.innerHTML = cnt_bad; //줄어든 숫자를 obj_cnt_bullet에 넣기
 							if(cnt_bad <= 0){
-								setTimeout('alert("you win")',1);
+//								sock.send("win:" + myname);
+								setTimeout('alert("승리")', 1);
 								flag_ing = false;
 								renderer.render( scene, camera );
 								return; //0이면 아래 코드 더이상 실행 안함
@@ -370,17 +437,6 @@
 						}
 					}
 				}
-				
-				
-				
-				
-				
-				
-
-				renderer.render( scene, camera );
-
-				stats.update();
-				
 
 			}
 			
@@ -390,15 +446,15 @@
 				var flag_speed = false;
 				var key = event.key;
 				if (key == 'ArrowUp') {
-					p_speed += 0.1;
+					p_speed += 0.2;
 					flag_speed = true;
 				} else if (key == 'ArrowDown') {
-					p_speed -= 0.04;
+					p_speed -= 0.5;
 					flag_speed = true;
 				} else if (key == 'ArrowLeft') {
-					player.rotation.y += 0.1;
+					player.rotation.y += 0.2;
 				} else if (key == 'ArrowRight') {
-					player.rotation.y -= 0.1;
+					player.rotation.y -= 0.2;
 				} else if (key == ' ') {
 					shooting();
 				} 
@@ -424,7 +480,6 @@
 
 			};
 			
-			
 			function shooting(){
 			
 				//console.log(player.position);
@@ -442,10 +497,12 @@
 				//console.log(obj_cnt_bullet);
 				//console.log(cnt_bullet);
 
+				
+				new THREE.BoxGeometry( 100, 10, 100 );
 			
 				//var geometry = new THREE.SphereGeometry( 20, 6, 6 );
-				var geometry = new THREE.BoxGeometry( 5, 5, 5 );
-				var material = new THREE.MeshBasicMaterial({ color: 0x000000 });
+				var geometry = new THREE.BoxGeometry( 1, 5, 1 );
+				var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 				material.wireframe = true;
 				var bullet = new THREE.Mesh( geometry, material );
 				
@@ -461,14 +518,168 @@
 			}
 
 			
-			
-			
-			
 			init();
 			animate();
 			
 			
 
+		</script>
+		
+		<script>
+// 			var sock;
+// 			function fn_init(){
+// 				sock = io.connect('http://192.168.35.51:9999'); // myflask.py
+// 				sock.on('connect', function(){
+// 					console.log("i connect");
+// 				});
+
+// 				sock.on('message', function(msg){
+// 					var info = msg.message;
+// 					var infos = info.split(":");
+// 					console.log(infos);
+// 					if(infos[0]=="ready"){
+// 						rv_ready(infos[1]);
+// 					}
+// 					if(infos[0]=="start"){
+// 						rv_start(infos[1]);
+// 					}
+// 					if(infos[0]=="display"){
+// 						rv_display(infos[1], infos[2]);
+// 					}
+// 					if(infos[0]=="dead"){
+// 						rv_dead(infos[1]);
+// 					}
+// 					if(infos[0]=="win"){
+// 						rv_win(infos[1]);
+// 					}
+// 				});
+// 			}
+			
+// 			function rv_win(name){
+// 				alert(name + "가 이겼습니다.");
+// 				flag_ing = false;
+// 			}
+			
+// 			function rv_dead(name){
+				
+// 				var idx = checkUser(name);
+				
+// 				var arr_str = str.split(",");
+				
+// 				var st_names = document.getElementsByClassName("st_names");
+// 				st_names.style.backgroungColor = "red";
+				
+// 			}
+			
+// 			function rv_display(name, str){
+				
+// 				var idx = checkUser(name);
+				
+// 				var arr_str = str.split(",");
+				
+// 				var canvases = document.getElementsByClassName("can_user"); // document.querySelectorAll
+// 				var ctx = canvases[idx].getContext("2d");
+// 				ctx.clearRect(0, 0, canvases[idx].width, canvases[idx].height);
+				
+// 				for(var i=0;i<arr_str.length;i++){
+// 					var bpxz = arr_str[i].split(".");
+// 					var bp = bpxz[0];
+// 					var bpx = parseInt(bpxz[1]/10);
+// 					var bpz = parseInt(bpxz[2]/10);
+// 					if(bp=='b'){
+// 						var cenx = bpx+50;
+// 						var ceny = bpz+50;
+// 						ctx.beginPath();
+// 						ctx.rect(cenx-10, ceny-10, 10*2, 10*2);
+// 						ctx.fillStyle = "#FF0000";
+// 						ctx.fill();
+// 						ctx.closePath();
+// 					}
+// 					if(bp=='p'){
+// 						var cenx = bpx+50;
+// 						var ceny = bpz+50;
+// 						ctx.beginPath();
+// 						ctx.arc(cenx, ceny, 10, 0, Math.PI*2, false);
+// 						ctx.fillStyle = "green";
+// 						ctx.fill();
+// 						ctx.closePath();
+// 					}
+// 				}
+// 			}
+			
+// 			function rv_start(str_users){
+// 				var arr_users = str_users.split(",");
+// 				users.splice(0,users.length);
+// 				for(var i=0;i<arr_users.length;i++){
+// 					users.push(arr_users[i]);
+// 				}
+// 				console.log("users",users);
+				
+				
+// 				var st_names = document.querySelectorAll(".st_name");
+// 				for(var i=0;i<st_names.length;i++){
+// 					st_names[i].innerHTML = "__";
+// 				}
+				
+// 				for(var i=0;i<users.length;i++){
+// 					st_names[i].innerHTML = users[i];
+// 				}
+				
+// 				console.log("flag_ing",flag_ing);
+				
+// 				flag_ing= true;
+		
+// 			}
+			
+			
+// 			var users = [];
+// 			function checkUser(user_name){
+// 				for(var i=0;i<users.length;i++){
+// 					if(users[i]==user_name){
+// 						return i;
+// 					}
+// 				}
+// 				return -1;
+// 			}
+			
+// 			function rv_ready(user_name){
+				
+// 				var idx = checkUser(user_name);
+				
+// 				if(idx == -1){ // non-exist
+// 					users.push(user_name);
+// 				}
+				
+// 				var st_names = document.querySelectorAll(".st_name");
+// 				for(var i=0;i<users.length;i++){ // add all connection
+// 					st_names[i].innerHTML = users[i];
+					
+// 				}
+// 			}
+			
+			
+// 			function fn_send(){
+// 				sock.send("hello");
+// 			}
+			
+// 			function fn_ready(){
+// 				var obj_it_name = document.querySelector("#it_name");
+// 				var myname = obj_it_name.value;
+// 				const regex = /^[가-힣]+$/;
+// 				console.log(regex.test(myname));
+// 				if(!regex.test(myname)){
+// 					return;
+// 				}
+// 				if(myname.length != 3){
+// 					return;
+// 				}
+// 				sock.send("ready:"+obj_it_name.value);
+// 			}
+// 			function fn_start(){
+// 				sock.send("start:"+users); // 문자열 + 배열 => 문자열(자바스크립트에만 있음)
+// 			}
+			
+// 			fn_init();
 		</script>
 
 	</body>
