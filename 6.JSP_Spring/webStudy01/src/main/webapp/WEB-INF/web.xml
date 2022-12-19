@@ -27,5 +27,13 @@
   	<url-pattern>/imageStreaming.do</url-pattern>
   </servlet-mapping>
   
+  
+  <session-config>
+	  <session-timeout>2</session-timeout> <!-- session timetout 2분으로 설정  -->
+  </session-config>
+  
+  
+  
+  
 
 </web-app>
