@@ -141,11 +141,27 @@
 				{'x':-500	,'z':500,	'color':0xFF0000},
 				{'x':500	,'z':500,	'color':0xFFFF00},
 				{'x':-500	,'z':-500,	'color':0xA901DB},
-				{'x':500	,'z':-500,	'color':0xBDBDBD}
+				{'x':500	,'z':-500,	'color':0xBDBDBD},
+				
+				{'x':500	,'z':0,	'color':0xBDBDBD},
+				{'x':-500	,'z':0,	'color':0xBDBDBD},
+				{'x':0	,'z':500,	'color':0xBDBDBD},
+				{'x':0	,'z':-500,	'color':0xBDBDBD}
 	
 			];
 
 			function init() {
+			
+			
+				var obj_cnt_bullet = document.querySelector("#span_cnt_bullet");
+				var obj_cnt_bad = document.querySelector("#span_cnt_bad");
+				
+				obj_cnt_bullet.innerHTML = parseInt(xzs.length * 1.5);
+				obj_cnt_bad.innerHTML = xzs.length;
+			
+			
+			
+			
 
 				camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
 				camera.position.z = 0;
@@ -208,6 +224,11 @@
 			
 			
 			function animate() {
+			
+				var obj_it_name = document.querySelector("#it_name");
+				var myname = obj_it_name.value;
+			
+			
 			
 				requestAnimationFrame( animate );
 				if(!flag_ing){
@@ -277,6 +298,7 @@
 					
 					if(r<100) {
 						setTimeout('alert("게임오버")', 1);
+						sock.send("dead:" + myname);
 						//alert("게임오버"); alert 오류 => alert가 먼저 포커싱을 가져오는 문제가 있기때문에 settimeout을 이용해서 조금 alert를 딜레이 시켜둔 후 위에 소스를 출력먼저 하도록 만든다.
 						flag_ing = false;
 						p_speed = 0;
@@ -299,6 +321,10 @@
 				str_character_pos += "p."+ppx+"."+ppz+"";
 				
 				console.log(str_character_pos);
+				
+
+				sock.send("display:"+myname+":"+str_character_pos);
+				
 				
 				//camera.lookAt(player.position); //카메라위치 따라가기 
 				renderer.render( scene, camera );
@@ -332,6 +358,7 @@
 							if(cnt_bad <= 0){
 								setTimeout('alert("you win")',1);
 								flag_ing = false;
+								sock.send("win:" + myname);
 								renderer.render( scene, camera );
 								return; //0이면 아래 코드 더이상 실행 안함
 							}
@@ -414,7 +441,7 @@
 		<script>
 			var sock;
 			function fn_init(){
-				sock = io.connect('http://192.168.35.75:9999');
+				sock = io.connect('http://192.168.35.32:9999');
 				sock.on('connect', function(){
 					console.log("i connect");
 				});
@@ -429,7 +456,83 @@
 					if(infos[0]=="start"){
 						rv_start(infos[1]);
 					}
+					if(infos[0]=="display"){
+						rv_display(infos[1],infos[2]);
+					}
+					
+					if(infos[0]=="dead"){
+						rv_dead(infos[1]);
+					}
+					
+					if(infos[0]=="win"){
+						rv_win(infos[1]);
+					}
+					
 				});
+			}
+
+						
+						
+			// 어떤사람이 이겼을 경우 			
+			function rv_win(name) {
+			
+				alert(name + "가 이겼습니다.");
+				flag_ing = false; //다른사람 게임동작 중지시키기 
+			
+			}
+			
+			
+			
+			
+			function rv_dead(name){
+				var idx = checkUser(name); //몇번째 방인지 알려줌 
+				var st_names = document.getElementByClassName('st_name');
+				st_names[idx].style.backgroundColor = "red";
+			}
+			
+
+			
+			function rv_display(name,str){
+				console.log("name",name);
+				console.log("str",str);
+				
+				var idx = checkUser(name);
+				
+				
+				var arr_str = str.split(",");
+				
+				var canvases = document.getElementByClassName('can_user');
+				var ctx = canvases[idx].getContext("2d");
+				ctx.clearRect(0, 0, canvases[idx].width, canvases[idx].height);
+				
+				for(var i=0;i<arr_str.length;i++){
+					var bpxz = arr_str[i].split(".");
+					var bp = bpxz[0];
+					var bpx = parseInt(bpxz[1]);
+					var bpz = parseInt(bpxz[2]);
+					if(bp=="b"){
+						var cenx = (bpx+500)/10;
+						var ceny = (bpz+500)/10;
+						ctx.beginPath();
+						ctx.rect(cenx-10, ceny-10, 10*2, 10*2);
+						ctx.fillStyle = "#FF0000";
+						ctx.fill();
+						ctx.closePath();
+					}
+					
+					if(bp=="p"){
+						var cenx = (bpx+500)/10;
+						var ceny = (bpz+500)/10;
+						ctx.beginPath();
+						ctx.arc(cenx, ceny, 10, 0, Math.PI*2, false);
+						ctx.fillStyle = "green";
+						ctx.fill();
+						ctx.closePath();
+					}
+					
+					
+				}
+			
 			}
 			
 			function rv_start(str_users){

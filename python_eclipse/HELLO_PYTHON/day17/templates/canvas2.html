@@ -10,47 +10,58 @@
 </head>
 <body>
 
-<canvas id="myCanvas" width="200" height="200"></canvas>
+<canvas id="myCanvas" width="100px" height="100px"></canvas>
 
 <script>
 
 var str = "b.-499.499,b.499.499,b.-499.-499,b.499.-499,p.0.0"; //bad와 player의 처음 위치값 가져오기 
-var arr_str = str.split(","); //,를 기준으로 자르기 
-
-var canvas = document.getElementById("myCanvas");//canvas 엘리먼트 취득
-var ctx = canvas.getContext("2d");// 2d모드의 그리기 객체 취득
 
 
-//그리기 시작 
-for(var i=0;i<arr_str.length;i++){
-	var bpxz = arr_str[i].split("."); //bad, player, x, z //  .을 기준으로 자르기 
-	var bp = bpxz[0]; //bad, player 위치 = bpxz의 0번째 자리 
-	var bpx = parseInt(bpxz[1]); //bad의 x위치, player의 x위치 
-	var bpz = parseInt(bpxz[2]);
-	if(bp=="b"){ //bp의 0번째 값이 b라면 
-		var cenx = (bpx+500)/5;
-		var ceny = (bpz+500)/5;
-		//사각형 그리기 
-		ctx.beginPath();
-		ctx.rect(cenx-10, ceny-10, 10*2, 10*2);
-		ctx.fillStyle = "#FF0000";
-		ctx.fill()
-		ctx.closePath();
+function drawCanvas(str) {
+	var arr_str = str.split(","); //,를 기준으로 자르기 
+
+	var canvas = document.getElementById("myCanvas");//canvas 엘리먼트 취득
+	var ctx = canvas.getContext("2d");// 2d모드의 그리기 객체 취득
+
+
+	//그리기 시작 
+	for(var i=0;i<arr_str.length;i++){
+		var bpxz = arr_str[i].split("."); //bad, player, x, z //  .을 기준으로 자르기 
+		var bp = bpxz[0]; //bad, player 위치 = bpxz의 0번째 자리 
+		var bpx = parseInt(bpxz[1]); //bad의 x위치, player의 x위치 
+		var bpz = parseInt(bpxz[2]);
+		if(bp=="b"){ //bp의 0번째 값이 b라면 
+			var cenx = (bpx+500)/10
+			var ceny = (bpz+500)/10;
+			//사각형 그리기 
+			ctx.beginPath();
+			ctx.rect(cenx-10, ceny-10, 10*2, 10*2);
+			ctx.fillStyle = "#FF0000";
+			ctx.fill()
+			ctx.closePath();
+		}
+		
+		if(bp=="p"){
+			var cenx = (bpx+500)/10;
+			var ceny = (bpz+500)/10;
+			//원 그리기 
+			ctx.beginPath();
+			ctx.arc(cenx, ceny, 10, 0, Math.PI*2, false);//x, y, 반지름 
+			ctx.fillStyle = "green";
+			ctx.fill();
+			ctx.closePath();
+		}
+		
+		
 	}
-	
-	if(bp=="p"){
-		var cenx = (bpx+500)/5;
-		var ceny = (bpz+500)/5;
-		//원 그리기 
-		ctx.beginPath();
-		ctx.arc(cenx, ceny, 10, 0, Math.PI*2, false);//x, y, 반지름 
-		ctx.fillStyle = "green";
-		ctx.fill();
-		ctx.closePath();
-	}
-	
-	
+
 }
+
+
+drawCanvas(str);
+
+
+
 
 
 //중심 맞추기 
