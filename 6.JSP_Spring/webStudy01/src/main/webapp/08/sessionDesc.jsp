@@ -6,12 +6,23 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<jsp:include page="/includee/preScript.jsp" />
+<script type="text/javascript" src="<%=request.getContextPath() %>/resources/js/custom.js"></script>
+
 </head>
 <body>
 
 <h4>session(HttpSession)</h4>
 
 <h4 id="timerArea"></h4>
+
+<div id="msgArea">
+	세션을 연장하겠습니까?
+	<input type="button" value="예" class="controlBtn" id="YES" />
+	<input type="button" value="아니오" class="controlBtn" id="NO" />
+</div>
+
+
 <pre>
 	(웹)세션이란? 
 		: 어플리케이션 서버를 사용하기 시작한 순간부터 사용 종료까지의 기한.
@@ -36,7 +47,8 @@
 		1) 세션의 아이디가 재전송되지 않을 때  (ex) 세션과 관련된 쿠키 삭제 됐을 경우
 		2) 브라우저가 종료될 때 
 		3) session timeout 이내에 새로운 요청을 통해 아이디가 재전송되지 않을 때
-		4) session invalidation(명시적인 로그아웃) : 로그아웃 버튼을 눌렀을 때 
+		4) session invalidation(명시적인 로그아웃) : 로그아웃 버튼을 눌렀을 때  (세션 즉시 만료)
+
 		
 	
 	////////////////////////////////////////////////////////////////
@@ -60,18 +72,34 @@
 	
 </pre>
 
+
+
+
+
+
 <script>
 
 
 	//custom.js
-	$("#timerArea").sessionTimer(120);
+//	$("#timerArea").sessionTimer(120);
+//	$("#timerArea").sessionTimer(${pageContext.session.maxInactiveInterval} , "#msgArea", ".controlBtn");
+	$("#timerArea").sessionTimer(${pageContext.session.maxInactiveInterval} , {
+		 msgAreaSelector : "#msgArea",
+		 btnSelector : ".controlBtn"
+	});
 	//sessionTimer 바꿔보기 
 	//4분이면 240
 	//3분이면 140... 
-
-
+	
+	
+	//controlBtn을 클릭했을 때 적용되는 함수
+	/* $(document).on("click", ".controlBtn", function(){
+		
+	}); */
+	
 
 </script>
+<jsp:include page="/includee/postScript.jsp" />
 
 </body>
 </html>

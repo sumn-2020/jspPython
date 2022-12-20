@@ -21,7 +21,7 @@
 	page(Object) == this, custom tag 작성시 활용됨
 	config(ServletConfig) : 현재 서블릿의 설정 정보를 캡슐화한 객체.
 	
-	<!-- ★★★★★ -->
+	<!-- ★★★★★ el ${} 에서는 pageContext만 쓸수있으면 나머지들은 사용못함-->
 	pageContext(PageContext) : 현재 JSP페이지에 대한 모든 정보를 캡슐화한 객체 , 가장 먼저 생성됨, 모든 기본객체들이 pageContext에서 파생됨 
 	ex) ${pageContext.request.contextPath}
 

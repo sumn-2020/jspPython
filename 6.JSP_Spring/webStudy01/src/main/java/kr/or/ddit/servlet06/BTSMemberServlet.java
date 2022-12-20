@@ -45,7 +45,9 @@ public class BTSMemberServlet extends HttpServlet{
 			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
-		String contentPage = contents[1]; //컨텐츠페이지 url 
+		String contentPage = contents[1]; //컨텐츠페이지 url  => /WEB-INF/views/bts/rm.jsp
+		
+		System.out.println(contentPage);
 		req.setAttribute("contentPage", contentPage);
 		req.getRequestDispatcher("/WEB-INF/views/bts/btsLayout.jsp").forward(req, resp);
 	

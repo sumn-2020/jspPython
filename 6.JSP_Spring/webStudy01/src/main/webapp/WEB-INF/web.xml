@@ -34,6 +34,23 @@
   
   
   
+  <error-page>
+  	<error-code>500</error-code> <!--  500에러가 뜨면 전문적으로 처리해줄수있는 페이지를 만들수있다. -->
+  	<location>/errors/error500.jsp</location>
+  </error-page>
+  
+   <error-page>
+  	<error-code>404</error-code> <!--  404에러가 뜨면 전문적으로 처리해줄수있는 페이지를 만들수있다. -->
+  	<location>/errors/error404.jsp</location>
+  </error-page>
+  
+  
+  <error-page>
+  	<exception-type>java.lang.NullPointerException</exception-type> <!-- 다른 예외는 처리하지 않고 nullp[intexception하나만 처리해주는 페이지를 만들겠다.   -->
+  	<location>/errors/errorNull.jsp</location>
+  </error-page>
+  
+  
   
 
 </web-app>
