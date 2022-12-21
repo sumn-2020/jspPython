@@ -25,12 +25,15 @@ import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 public class SpecificTargetFileBrwosingServlet extends HttpServlet {
 
 	
+	//ServletContext(application) : 서버 정보가 다 들어있는 것
 	private ServletContext application;
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		application = config.getServletContext();
 	}
+	
+	
 	
 	
 	
@@ -66,10 +69,12 @@ public class SpecificTargetFileBrwosingServlet extends HttpServlet {
 		
 
 		//2.
+		//fileList 
 		//필요한 파일 정보를 가져올 수 있음 
 		//File[] fileList 이게 우리가 내보내야 할 json파일 형태 
 		//File[] fileList = targetFolder.listFiles();만으로는 그대로 마샬링 못하기 때문에 adapter, adaptee 같은 wrapper 디자인 패턴을 이용해서 재구조화 시켜줘야됨 
 		File[] fileList = targetFolder.listFiles();
+		System.out.println(fileList);
 		//돼지코들  모아둠
 		List<FileWrapper> wrapperList = Arrays.stream(fileList)
 							 .map(file -> new FileWrapper(file,application)) //람다식이 딱 한줄이면 body부분 없앨수있음

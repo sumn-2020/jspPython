@@ -86,11 +86,12 @@ public class FileSystemMemoDAOImpl implements MemoDAO {
 
 	@Override
 	public int deleteMemo(int code) {
-		// TODO Auto-generated method stub
+
+	
+		
 		return 0;
 	}
-	
-	
+
 	
 
 }

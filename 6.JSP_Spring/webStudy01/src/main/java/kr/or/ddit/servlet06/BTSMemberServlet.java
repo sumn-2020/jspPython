@@ -33,10 +33,14 @@ public class BTSMemberServlet extends HttpServlet{
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String requestURI = req.getRequestURI();
+	
+		
 		String code =  Optional.of(requestURI)
 						.map(uri->uri.substring(req.getContextPath().length())) //url 잘라내기
 						.map(uri->uri.substring("/bts/".length())) ///bts/ 이후의 것들을 잘라낸다 
 						.get();
+		
+	
 		
 		Map<String, String[]>  members =  (Map) application.getAttribute("btsMembers");
 		String[] contents = members.get(code);

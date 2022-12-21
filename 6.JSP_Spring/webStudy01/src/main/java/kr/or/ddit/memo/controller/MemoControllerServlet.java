@@ -33,7 +33,7 @@ public class MemoControllerServlet extends HttpServlet{
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-				//"요청분석"단계 굳이 넣을 필요 없음 - memoVO전체를 불러오기 때문에 필요 없음
+		//"요청분석"단계 굳이 넣을 필요 없음 - memoVO전체를 불러오기 때문에 필요 없음
 		//만약 작업하려면 아래와 같이 하면됨 
 		String accept = req.getHeader("Accept");
 		if(accept.contains("xml")) {
@@ -138,6 +138,12 @@ public class MemoControllerServlet extends HttpServlet{
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+		
+		
+		
+		
+		
+		
 	
 	}
 	
