@@ -40,6 +40,11 @@ public class FileWrapper {
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
 	}
+	
+	
+	// 쓸데없는 주소값 : 이상하게 옴 
+	// 근데 우리는 name하고 contentType만 필요한데 엉뚱한것들도 같이 오는건 불필요하니까
+	//이렇게 원하는것만 뽑아서 쓰려면 wrapper 디자인 패턴 써야됨 
 
 
 

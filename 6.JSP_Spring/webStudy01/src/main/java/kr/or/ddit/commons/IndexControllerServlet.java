@@ -17,7 +17,7 @@ public class IndexControllerServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		req.setAttribute("contentPage", "/WEB-INF/views/index.jsp");
-		String viewName ="/WEB-INF/views/index.jsp";
+		String viewName ="/WEB-INF/views/layout.jsp";
 		req.getRequestDispatcher(viewName).forward(req, resp);
 	}
 }
