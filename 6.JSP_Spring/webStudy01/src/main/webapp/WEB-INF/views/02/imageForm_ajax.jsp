@@ -3,6 +3,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c" %>   
+    
+    
+    
 <!-- ImageStreamingFormServlet03  -->
     
 <!DOCTYPE html>
@@ -121,6 +125,13 @@
 				});
 				SELECTTAG.append(options);
 				
+				
+				//쿠키가 있어야되어야 실행함 => 백단 코드임  프론트단 코드 아님 
+				<c:if test="${not empty cookie['imageCookie']['value']}">
+					//${cookie['imageCookie']['value']} //이미지의 이름이 들어있음  => imageCookie쿠키 안에 들어있는 value값 출력 
+					SELECTTAG.val("${cookie['imageCookie']['value']}"); //하나의 값을 선택상태로 둘수있음 
+					SELECTTAG.trigger('change');//이벤트 발생시키는 함수 : trigger; => change이벤트가 있어야 사진이 로드 되기 때문에 
+				</c:if>
 				
 				
 				// 1. select 이벤트

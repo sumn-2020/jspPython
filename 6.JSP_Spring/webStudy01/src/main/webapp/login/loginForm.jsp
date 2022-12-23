@@ -46,8 +46,12 @@ IndexControllerServlet
 	
 		<!--  param.memId  : 파라미터 중 memId 받아서 value값에넣기  -->
 		<li>
-			<input type="text" name="memId" placeholder="아이디" value="${validId }"    /> 
-			<input type="checkbox" name="saveId" />아이디기억하기
+			<%-- ${cookie['saveId'] } --%><!-- 뒷단에서 saveId의 쿠키 객체 받아옴  --> <!-- private Map<String, Cookie> cookieMap;  -->
+			<c:set var="saveId" value="${cookie['saveId']['value'] }" /> <!--  value가 있으면  savedId 안에 value값 들어있음 없으면 공백 -->
+			<input type="text" name="memId" placeholder="아이디" value="${not empty validId ? validId : saveId }"    />  <!-- validId이 있으면 validId   -->
+			<input type="checkbox" name="saveId" ${not empty savedId ? "checked" : '' }   />아이디기억하기<!-- 체크했을 경우 saveId이 뒷단으로 넘어감 체크 안했을 땐 공백 넘어감   -->
+			
+
 			<!-- 
 			문제
 			최대 5일까지 아이디 기억하기 

@@ -123,7 +123,7 @@ CookieHttpServletRequestWrapper
 
 		maxAge : 쿠키의 만료 시한을 결정 /  기본값 : 세션 만료 시한
 			ex)  0 : 기존에 저장되어있는 longLiveCookie를 삭제하는 역할
-			            (name, value... 등 모든 속성이 동일한 쿠키인 경우 삭제)
+			            (name, value... 등 "모든 속성이 동일한 경우에만" 삭제가능)
 				 longLiveCookie.setMaxAge(0);
 				 
 				 -1 : 브라우저가 꺼지면 longLiveCookie를 삭제하는 역할

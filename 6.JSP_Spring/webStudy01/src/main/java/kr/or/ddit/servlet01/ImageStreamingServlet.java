@@ -53,6 +53,12 @@ public class ImageStreamingServlet extends HttpServlet {
 		
 		
 		
+		Cookie imageCookie = new Cookie("imageCookie", imageName);  //imageName을  쿠키로 저장
+		imageCookie.setPath(req.getContextPath());
+		imageCookie.setMaxAge(60*60*24*3); //쿠키 3일간 저장해두기 
+		resp.addCookie(imageCookie);
+		
+		
 		
 		FileInputStream fis=null;
 		OutputStream os=null;

@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,6 +51,7 @@ public class LoginProcessControllerServlet extends HttpServlet{
 		//1단계 파라미터 값 가져와서 해당 파라미터 값 상태 괜찮은지 검증하기 
 		String memId = req.getParameter("memId"); //앞단에서  받아온 아이디
 		String memPass =  req.getParameter("memPass"); //앞단에서  받아온 비밀번호 
+		String saveId = req.getParameter("saveId"); //넘어온 값이 있거나 없거나 아이디 저장 
 		MemberVO member = new MemberVO(); //memberVO객체 만들어서 memberVO속에 있는 내용물을 이 페이지에서 사용할 수 있도록 세팅해두기 
 		member.setMemId(memId); //memberVO속에 파라미터로 받아온 memId 넣어주기! 
 		member.setMemPass(memPass); //memberVO속에 파라미터로 받아온 memPass 넣어주기! 
@@ -64,8 +66,25 @@ public class LoginProcessControllerServlet extends HttpServlet{
 			
 			//2번단계 : 검증 
 			//4번단계 : view결정 
+			
 			if(authenticate(member)) { //(authenticate여기로 member다시 넘기기 => memId와 memPass가 서로 같다? 그럼 2차도 통과완료!) => 인증성공시
+				
+				//"아이디저장" 체크했을 경우
+				Cookie saveIdCookie = new Cookie("saveId", member.getMemId()); //쿠키하나 만들기 
+//				ex)www[blog]naver.com
+				saveIdCookie.setDomain("localhost");//도메인만들고
+				saveIdCookie.setPath(req.getContextPath()); //path만들고
+				int maxAge = 0;
+				if(StringUtils.isNoneBlank(saveId)) { //성공시=> 쿠키를 만들어서 5일동안 유지해야됨
+					maxAge = 60*60*24*5;  // 쿠키 5일동안 유지
+				}
+				saveIdCookie.setMaxAge(maxAge); // 쿠키의 만료 시한을 결정
+				resp.addCookie(saveIdCookie);  
+				
+				
 				session.setAttribute("authMember", member); //session에다가 memberVO 내용들을 "authMember"이라는 이름으로 저장해두기 => index.jsp에서 사용되고있음
+				viewName = "redirect:/";
+			
 			}else {//인증실패시 
 				session.setAttribute("validId", memId); //session에 validId라는 이름으로 memId 저장하기 
 														// 만약 아이디/비번값이 틀릴 경우 브라우저에 그대로 남아있어야 하는 조건때문에 jsp(앞단)에서 value="${validId }" 사용함

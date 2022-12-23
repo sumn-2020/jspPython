@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 public class CookieHttpServletRequestWrapper extends HttpServletRequestWrapper{ //HttpServletRequestWrapper를 상속받으면  adater는 adaptee가 없으면 존재할 수 없음 => adaptee로 request를 받아옴
 
-	private Map<String, Cookie> cookieMap;
+	private Map<String, Cookie> cookieMap; //우리가 사용하는 el객체는 이걸 뜻함 
 	
 	public CookieHttpServletRequestWrapper(HttpServletRequest request) {
 		super(request);
