@@ -36,9 +36,9 @@ DataBasePropertyControllerServlet
 	4. Connection수립 
 	5. 쿼리 객체 생성  <!-- java가 sql문을 해석하고 컴파일할 수 있게끔해주는 중간통로인 쿼리 객체 필요 -->
 		[쿼리객체의 종류]
-		- Statement
-		- PreparedStatement
-		- CallableStatement
+		- Statement : 기본쿼리객체로 런타임에 쿼리가 동적 변경될 수 있음. sql injection에 취약함
+		- PreparedStatement : 쿼리 파라미터를 포함하여, 쿼리 객체시 쿼리를 미리 컴파일 함 
+		- CallableStatement : function/procedure와 같은 절차적 코듸 집합을 실행할 때 사용하는 쿼리 객체
 	6. 쿼리 실행 
 		[실행할 쿼리의 종류]
 		- ResultSet executeQuery  =>  DB 에서 뭔가를 받아야할 쿼리 : 반환값의 형태 필요 => select 
@@ -48,7 +48,10 @@ DataBasePropertyControllerServlet
 
 </pre>
 
-
+<form>
+	<input type="text" name="propertyName" placeholder="검색할 프로퍼티명" value="${param.propertyName }" />
+	<input type="submit" value="검색" />
+</form>
 
 <table>
 	<thead>

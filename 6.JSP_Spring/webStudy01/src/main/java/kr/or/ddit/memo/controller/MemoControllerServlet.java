@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
+import kr.or.ddit.memo.dao.DataBaseMemoDaoImpl;
 import kr.or.ddit.memo.dao.FileSystemMemoDAOImpl;
 import kr.or.ddit.memo.dao.MemoDAO;
 import kr.or.ddit.vo.MemoVO;
@@ -26,8 +27,14 @@ import kr.or.ddit.vo.MemoVO;
 public class MemoControllerServlet extends HttpServlet{
 	
 	
-	private MemoDAO dao = FileSystemMemoDAOImpl.getInstance();
-	private MemoVO memo;
+//	private MemoDAO dao = FileSystemMemoDAOImpl.getInstance();
+//	private MemoVO memo; 
+
+	private MemoDAO dao = DataBaseMemoDaoImpl.getInstance();
+//	private MemoDAO dao;  // => 이렇게 되면 컨트롤러와 dao사이에 의존성이 아예 없어짐  => 이렇게 쓸라면 container가 있어야됨
+	
+	
+	
 
 	
 	@Override

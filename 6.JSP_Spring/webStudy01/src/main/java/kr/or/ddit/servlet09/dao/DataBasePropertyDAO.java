@@ -5,6 +5,6 @@ import java.util.List;
 import kr.or.ddit.vo.DataBasePropertyVO;
 
 public interface DataBasePropertyDAO {
-	public List<DataBasePropertyVO> selectPropertyList();
+	public List<DataBasePropertyVO> selectPropertyList(String propertyName);
 	
 }

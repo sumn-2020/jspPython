@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import kr.or.ddit.servlet09.dao.DataBasePropertyDAO;
 import kr.or.ddit.servlet09.dao.DataBasePropertyDAOImpl;
+import kr.or.ddit.servlet09.service.DataBasePropertyServiceImpl;
+import kr.or.ddit.servlet09.service.DatabasePropertyService;
 import kr.or.ddit.vo.DataBasePropertyVO;
 
 
@@ -25,18 +27,21 @@ public class DataBasePropertyControllerServlet extends HttpServlet{
 
 	
 	
-	private DataBasePropertyDAO dao = new DataBasePropertyDAOImpl(); //dao에 있는 내용물 가져오기
+	private DatabasePropertyService service = new DataBasePropertyServiceImpl();
 	
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		List<DataBasePropertyVO> list = dao.selectPropertyList();
+		
+		//1
+		String propertyName = req.getParameter("propertyName");
+		
+		//2
+		List<DataBasePropertyVO> list = service.retrievePropertyList(propertyName); //실행코드의 캡슐화
+		//3
 		req.setAttribute("list", list); //자바코드 밖에서 갖고놀수있게끔 세팅해둬야됨 
-		
 
-		
-		
 		//4
 		String viewName = "/WEB-INF/views/13/jdbcDesc.jsp";
 		//5
