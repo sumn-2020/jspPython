@@ -25,6 +25,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * 6. 객체 직렬화 가능 해야됨 => implements Serializable
  *   숨겨야 하는 것들은 transient 붙여서 직렬화 피해줄 것 : private transient String memPass;
  *  
+ * 
+ *  
+ *  회원관리를 위한 Domain Layer
+ *  
+ *  
+ *  
+ *  
  *  
  */
 public class MemberVO implements Serializable {
@@ -51,7 +58,7 @@ public class MemberVO implements Serializable {
 	private String memLike;
 	private String memMemorial;
 	private String memMemorialday;
-	private String memMileage;
+	private Integer memMileage;
 	private String memDelete;
 	
 	
@@ -158,12 +165,14 @@ public class MemberVO implements Serializable {
 	public void setMemMemorialday(String memMemorialday) {
 		this.memMemorialday = memMemorialday;
 	}
-	public String getMemMileage() {
+	public Integer getMemMileage() {
 		return memMileage;
 	}
-	public void setMemMileage(String memMileage) {
+	
+	public void setMemMileage(Integer memMileage) {
 		this.memMileage = memMileage;
 	}
+	
 	public String getMemDelete() {
 		return memDelete;
 	}
