@@ -89,6 +89,28 @@
 			<th>탈퇴여부</th>
 			<td>${member.memDelete}</td>
 		</tr>
+		
+		
+		<!-- 선택적 랜더링 필요 : 지금 로그인되어있는 member의 id   -->
+		<!-- 
+		sessionScope.authMember eq member => 원래 아래랑 결과 다른데 el에서는 동일하게 취급함 
+		sessionScope.authMember.equals(member)  => id 비교 
+		-->
+		
+		<c:if test="${sessionScope.authMember eq member }"> <!--  sessionScope에 저장되어있는 authMember와 member가 같다면  -->
+			<tr>
+				<td colspan="2">
+					<a href="<c:url value='/member/memberUpdate.do' />" class="btn btn-primary">수정</a>
+					<a href="" class="btn btn-danger">탈퇴</a>
+					<form method="post" action="<c:url value='/member/memberDelete.do' />">
+						<input type="password" name="memPass" />
+					</form>
+					<!-- <input type="button" value="수정" />
+					<input type="button" value="탈퇴" /> -->
+				</td>
+			</tr>
+		</c:if>
+		
 
 	</table>
 

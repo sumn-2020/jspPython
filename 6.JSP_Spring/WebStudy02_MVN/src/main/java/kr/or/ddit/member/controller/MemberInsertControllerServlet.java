@@ -4,6 +4,8 @@ import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -17,6 +19,9 @@ import org.apache.commons.beanutils.BeanUtils;
 import kr.or.ddit.enumpkg.ServiceResult;
 import kr.or.ddit.member.service.MemberService;
 import kr.or.ddit.member.service.MemberServiceImpl;
+import kr.or.ddit.mvc.view.InternalResourceViewResolver;
+import kr.or.ddit.validate.InsertGroup;
+import kr.or.ddit.validate.ValidationUtils;
 import kr.or.ddit.vo.MemberVO;
 
 @WebServlet("/member/memberInsert.do")
@@ -29,24 +34,20 @@ public class MemberInsertControllerServlet extends HttpServlet{
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		String viewName = "/WEB-INF/views/member/memberForm.jsp";
+		String viewName = "member/memberForm";
 		//5번단계 
-		// 규칙! redirect:/ 로 시작되는 viewName은 redirect로 넘기기
-		if(viewName.startsWith("redirect:")) { //viewName이 redirect:로 시작 할 경우  
-			viewName = viewName.substring("redirect:".length()); // redirect:길이 만큼 잘라라 => redirect: 이부분 삭제
-			resp.sendRedirect(req.getContextPath() + viewName); //   req.getContextPath() +  /login/loginForm.jsp
-		}else { //forward할 경우
-			req.getRequestDispatcher(viewName).forward(req, resp);
-		}
+		new InternalResourceViewResolver("/WEB-INF/views/", ".jsp").resolveView(viewName, req, resp);
 		
 	}
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+		//검증포함
 		//1. 파라미터값 받아오기 
 		req.setCharacterEncoding("UTF-8");
 		
+		//command object  : 명령에 관련된 모든 object를 여기서 관리한다 => 검증대상 
 		MemberVO member = new MemberVO(); //한꺼번에 vo에 넣어줄 그릇 하나 만들기 
 		req.setAttribute("member", member); //미리 membervo 공유 redirect 할때까지 정보 살아있게됨 
 		
@@ -78,33 +79,38 @@ public class MemberInsertControllerServlet extends HttpServlet{
 		
 		
 		
-		//2. 
+		
+		//검증하기 validationUtils
+		Map<String, List<String>> errors = new LinkedHashMap<>();
+		req.setAttribute("errors", errors); //jsp에서 쓸수있도록 공유 
+		boolean valid = ValidationUtils.validate(member, errors, InsertGroup.class);
 		String viewName = null;
 		
-		ServiceResult result =  service.createMember(member);
-		switch (result) {
-		case PKDUPLICATED: //pk중복일 경우
-			req.setAttribute("message", "아이디 중복");
-			viewName = "/WEB-INF/views/member/memberForm.jsp"; //정보 계속 남아있게됨  (req.setAttribute("member", member); //미리 membervo 공유 redirect 할때까지 정보 살아있게됨 )
-			break; //기존에 입력데이터((req.setAttribute("member", member), message(req.setAttribute("message", "아이디 중복");)를 가지고 memberForm.jsp로 넘어감 
-		case FAIL: 
-			req.setAttribute("message", "서버에 문제 있음. 조금있다하시오");
-			viewName = "/WEB-INF/views/member/memberForm.jsp";
-			break;
-		default: //ok일 경우
-			viewName = "redirect:/"; 
-			break;
+		if(valid) { //검증통과했을 경우 
+			ServiceResult result =  service.createMember(member);
+			switch (result) {
+			case PKDUPLICATED: //pk중복일 경우
+				req.setAttribute("message", "아이디 중복");
+				viewName = "member/memberForm"; //정보 계속 남아있게됨  (req.setAttribute("member", member); //미리 membervo 공유 redirect 할때까지 정보 살아있게됨 )
+				break; //기존에 입력데이터((req.setAttribute("member", member), message(req.setAttribute("message", "아이디 중복");)를 가지고 memberForm.jsp로 넘어감 
+			case FAIL: 
+				req.setAttribute("message", "서버에 문제 있음. 조금있다하시오");
+				viewName = "member/memberForm";
+				break;
+			default: //ok일 경우
+				viewName = "redirect:/"; 
+				break;
+			}
+		}else { //검증 실패했을 경우 
+			viewName = "member/memberForm";
 		}
 		
 		
-		//5번단계 
-		// 규칙! redirect:/ 로 시작되는 viewName은 redirect로 넘기기
-		if(viewName.startsWith("redirect:")) { //viewName이 redirect:로 시작 할 경우  
-			viewName = viewName.substring("redirect:".length()); // redirect:길이 만큼 잘라라 => redirect: 이부분 삭제
-			resp.sendRedirect(req.getContextPath() + viewName); //   req.getContextPath() +  /login/loginForm.jsp
-		}else { //forward할 경우
-			req.getRequestDispatcher(viewName).forward(req, resp);
-		}
+		
+
+		
+		
+		new InternalResourceViewResolver("/WEB-INF/views/", ".jsp").resolveView(viewName, req, resp);
 		 
 
 	

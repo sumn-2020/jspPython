@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import kr.or.ddit.member.service.MemberService;
 import kr.or.ddit.member.service.MemberServiceImpl;
+import kr.or.ddit.mvc.view.InternalResourceViewResolver;
 import kr.or.ddit.vo.MemberVO;
 
 
@@ -40,17 +41,10 @@ public class MemberViewControllerServlet extends HttpServlet {
 		req.setAttribute("member", member);
 		
 		//4.
-		String viewName = "/WEB-INF/views/member/memberView.jsp";
+		String viewName = "member/memberView";
 		
 		//5번단계 
-		// 규칙! redirect:/ 로 시작되는 viewName은 redirect로 넘기기
-		if(viewName.startsWith("redirect:")) { //viewName이 redirect:로 시작 할 경우  
-			viewName = viewName.substring("redirect:".length()); // redirect:길이 만큼 잘라라 => redirect: 이부분 삭제
-			resp.sendRedirect(req.getContextPath() + viewName); //   req.getContextPath() +  /login/loginForm.jsp
-		}else { //forward할 경우
-			req.getRequestDispatcher(viewName).forward(req, resp);
-		}
-		
+		new InternalResourceViewResolver("/WEB-INF/views/", ".jsp").resolveView(viewName, req, resp);
 		
 	}
 	

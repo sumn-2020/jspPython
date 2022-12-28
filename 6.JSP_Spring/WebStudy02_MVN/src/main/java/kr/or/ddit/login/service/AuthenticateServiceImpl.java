@@ -18,10 +18,9 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	public ServiceResult authenticate(MemberVO member) {
 		
 		//1. 이 사람이 있는지 여부 판단
-		MemberVO savedMember = memberDAO.selectMember(member.getMemId());
+    // selectMember => 멤버 하나만 찾기 
+		MemberVO savedMember = memberDAO.selectMember(member.getMemId()); 
 
-
-		
 		if(savedMember == null) { //그런 사람 없으면 
 			throw new UserNotFoundException(String.format("%s 사용자 없음", member.getMemId()));//예외발생
 		}
@@ -31,19 +30,21 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 		String savedPass = savedMember.getMemPass(); //기존에 가지고있는 비번
 		ServiceResult result = null;
 		
-		if(savedPass.equals(inputPass)) {
+		if(savedPass.equals(inputPass)) { //기존에 저장되어있던 비번과 넘어온 비번이 같다면
 			
 			try {
 //				member.setMemName(savedMember.getMemName()); //인증에 성공했을 때 savedMember안에 저장되어있는 MemName을 가져올 수 있음 
-//				아예 처음부터 memberVO안에 memberVO내용을 저장해 둘수있다면? reflection사용
-				BeanUtils.copyProperties(member, savedMember);
-				result = ServiceResult.OK;
+//				아예 처음부터 memberVO안에 memberVO내용을 미리 저장해 둘수있다? reflection사용하면 가능
+				BeanUtils.copyProperties(member, savedMember); //member: 원본 객체 / savedMember : 복사 대상 객체 => member내용을 savedMember안에 복사해서 넣어둠
+				result = ServiceResult.OK; //ok출력 
 			} catch (IllegalAccessException | InvocationTargetException e) {
-				throw new RuntimeException(e);
+				throw new RuntimeException(e); 
+				//언체크드 오류 : 자동으로was에서 처리되는 예외  => throw new RuntimeException(e); 
+				//체크드 오류 : 내가 확인해서 고쳐야하는 예외 
 			}
 
 			
-		}else {
+		}else { //그렇지 아니면 INVAILDPASSWORD출력 
 			result = ServiceResult.INVAILDPASSWORD;
 		}
 		

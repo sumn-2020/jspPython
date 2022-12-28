@@ -39,7 +39,7 @@ public class LoginProcessControllerServlet extends HttpServlet{
 		return member.getMemId().equals(member.getMemPass()); //MemberVO에 memId값이 memPass 값과 같으면 true 리턴!!!!
 	}
 */
-	private AuthenticateService service  = new AuthenticateServiceImpl();
+	private AuthenticateService service  = new AuthenticateServiceImpl(); //service와 의존성 맺기 
 
 	
 	//필드 나가면 걍 대부분 post로 해야됨. 보안때문에.. 

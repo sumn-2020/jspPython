@@ -91,6 +91,28 @@
 		)
 	</insert>
 	
+	<!-- 이름, 아이디, 마일리지 등은 사용자가 임의로 수정불가하기 때문에 작성할 필요x -->
+	<update id="updateMember" parameterType="MemberVO">
+	
+		update member 
+		set    
+			MEM_REGNO1 = #{memRegno1, jdbcType=CHAR}
+			, MEM_REGNO2 = #{memRegno2, jdbcType=CHAR}
+			, MEM_ZIP = #{memZip, jdbcType=CHAR}
+			, MEM_ADD1 = #{memAdd1, jdbcType=VARCHAR}
+			, MEM_ADD2 = #{memAdd2, jdbcType=VARCHAR}
+			, MEM_HOMETEL = #{memHometel, jdbcType=VARCHAR}
+			, MEM_COMTEL = #{memComtel, jdbcType=VARCHAR}
+			, MEM_HP = #{memHp, jdbcType=VARCHAR}
+			, MEM_MAIL = #{memMail, jdbcType=VARCHAR}
+			, MEM_JOB = #{memJob, jdbcType=VARCHAR}
+			, MEM_LIKE = #{memLike, jdbcType=VARCHAR}
+			, MEM_MEMORIAL = #{memMemorial, jdbcType=VARCHAR}
+			, MEM_MEMORIALDAY = TO_DATE(#{memMemorialday, jdbcType=DATE},'YYYY-MM-DD')
+		WHERE MEM_ID = #{memId}
+
+	</update>
+	
 	
 	
 	

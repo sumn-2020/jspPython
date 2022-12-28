@@ -18,7 +18,24 @@ public class MemberServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		member = new MemberVO();
-//		member.setMemId("a001");
+		member.setMemId("a002");
+		member.setMemPass("java");
+		member.setMemRegno1("12333");
+		member.setMemRegno2("12333");
+		member.setMemBir("2000-01-01");
+		member.setMemZip("0000");
+		member.setMemAdd1("주소1");
+		member.setMemAdd2("주소2");
+		member.setMemHometel("집");
+		member.setMemComtel("회사");
+		member.setMemHp("폰");
+		member.setMemMail("메일");
+		member.setMemJob("직업");
+		member.setMemLike("취미");
+		member.setMemMemorial("기념일");
+		member.setMemMemorialday("기념");
+		member.setMemMileage(123);
+		member.setMemDelete("1");
 	}
 
 	@Test
@@ -39,16 +56,13 @@ public class MemberServiceTest {
 	}
 
 	@Test
-	public void testRetrieveMember() {
-		
-		
-		
-		
+	public void testRetrieveMember() {	
 	}
 
 	@Test
 	public void testModifyMember() {
-		fail("Not yet implemented");
+		
+		ServiceResult rowcntresult =  service.modifyMember(member);
 	}
 
 	@Test

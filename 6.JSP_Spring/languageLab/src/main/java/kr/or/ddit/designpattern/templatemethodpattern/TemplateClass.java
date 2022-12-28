@@ -5,6 +5,7 @@ public abstract class TemplateClass {
 	// ******* template Method ******* 
 	public final void template() { //이 안에서는 1,2,3 단계가 딱 고정되어있음
 		
+		//순서 정의
 		 //이 순서가 바뀌지 않는 전형성을 가지고있어야됨 
 		 stepOne();
 		 stepTwo();

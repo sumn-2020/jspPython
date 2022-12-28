@@ -2,7 +2,19 @@ package kr.or.ddit.vo;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import javax.validation.groups.Default;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import kr.or.ddit.validate.DeleteGroup;
+import kr.or.ddit.validate.InsertGroup;
+import kr.or.ddit.validate.UpdateGroup;
 
 /**
  * VO(Value Object), DTO(Data Transfer Object), Java Bean, Model
@@ -35,29 +47,46 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *  
  */
 public class MemberVO implements Serializable {
-
 	
+	//(groups={InsertGroup.class, UpdateGroup.class})
+	//"가입"할때 + "수정"할때 검증하는 그룹 => memId
+	//"가입"할때만 검증하는 그룹(groups=InsertGroup.class)   => memBir 
+	
+	
+	//@NotBlank(groups= {Default.class, DeleteGroup.class}, message="아이디는 필수")  // 기본그룹, 기본그룹이면서 insert그룹, 기본그룹이면서 delete그룹 
+	@NotBlank(groups= {Default.class, DeleteGroup.class})  
 	private String memId;
-	//@JsonIgnore : 직렬화할때, 마샬링할때 스킵됨  (주민번호랑 비밀번호는 보이지 말아야 하니까 앞단에 넘겨줄 필요도 없음 )
-	@JsonIgnore
-	private transient String memPass;
+	@NotBlank(groups= {Default.class, DeleteGroup.class}) //memPass은 비어있을수없음
+	@Size(min=4, max=8) //4~8글자 이하
+	@JsonIgnore //직렬화할때, 마샬링할때 스킵됨  (주민번호랑 비밀번호는 보이지 말아야 하니까 앞단에 넘겨줄 필요도 없음 )
+	private transient String memPass; 
+	@NotBlank
 	private String memName;
 	@JsonIgnore
 	private transient String memRegno1;
 	@JsonIgnore
 	private transient String memRegno2;
-	private String memBir;
+	@Pattern(regexp="\\d{4}-\\d{2}-\\d{2}", groups=InsertGroup.class) // 형식제한 => \\d : 숫자 한글자 소문자d =>  TO_DATE(#{memMemorialday, jdbcType=DATE},'YYYY-MM-DD')
+	@NotBlank(groups=InsertGroup.class)
+	private String memBir; 
+	@NotBlank  //비어있을수없음
 	private String memZip;
+	@NotBlank
 	private String memAdd1;
+	@NotBlank
 	private String memAdd2;
 	private String memHometel;
 	private String memComtel;
 	private String memHp;
+	@Email
 	private String memMail;
 	private String memJob;
 	private String memLike;
 	private String memMemorial;
+	@Pattern(regexp="\\d{4}-\\d{2}-\\d{2}")
 	private String memMemorialday;
+	//@NotNull //마일리지에는 비어있지 않음을 쓰고싶다면 notBlank가 아니라 notNull을 써야됨 
+	@Min(0)//마일리지 최소값 
 	private Integer memMileage;
 	private String memDelete;
 	

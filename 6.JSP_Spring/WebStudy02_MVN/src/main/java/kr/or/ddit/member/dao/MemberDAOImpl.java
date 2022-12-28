@@ -63,11 +63,11 @@ public class MemberDAOImpl implements MemberDAO {
 	@Override
 	public int updateMember(MemberVO member) {
 		try(
-				SqlSession sqlSession = sqlSessionFactory.openSession(); // 트랜잭션(ACID) 시작         sql문 실행하기 위해 열어준다. 반드시 sql실행 후에는 닫아줘야됨 
+				SqlSession sqlSession = sqlSessionFactory.openSession(); // 트랜잭션(ACID) 시작         
 		){
 			MemberDAO mapperProxy = sqlSession.getMapper(MemberDAO.class);
 			int rowcnt = mapperProxy.updateMember(member);//받아온 파라미터 안넣어주고 다른방법으로 처리하는 방법
-			sqlSession.commit(); //  트랜잭션 종료           커밋을 해서 올리기 
+			sqlSession.commit(); //  트랜잭션 종료           
 			return rowcnt;
 		}
 	}
@@ -75,7 +75,7 @@ public class MemberDAOImpl implements MemberDAO {
 	@Override
 	public int deleteMember(String memId) {
 		try(
-				SqlSession sqlSession = sqlSessionFactory.openSession(); // 트랜잭션(ACID) 시작         sql문 실행하기 위해 열어준다. 반드시 sql실행 후에는 닫아줘야됨 
+				SqlSession sqlSession = sqlSessionFactory.openSession(); // 트랜잭션(ACID) 시작     => 세션 오픈  
 		){
 			MemberDAO mapperProxy = sqlSession.getMapper(MemberDAO.class);
 			int rowcnt = mapperProxy.deleteMember(memId);//받아온 파라미터 안넣어주고 다른방법으로 처리하는 방법

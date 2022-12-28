@@ -17,13 +17,16 @@ import kr.or.ddit.reflect.ReflectionTest;
  *
  *
  *
- */
+ *///		 MemberVO member = new MemberVO(); //일반적으로 붕어빵을 만드는 과정
+ //붕어빵 틀에 대한 정보가 없는 과정에서 붕어빵틀을 찾아가는 과정 
+
+
 
 
 public class ReflectionDesc {
 	public static void main(String[] args) {
 		
-		 Object dataObj = ReflectionTest.getObject();
+		 Object dataObj = ReflectionTest.getObject();	 
 //		 System.out.println(dataObj);
 		 
 		 

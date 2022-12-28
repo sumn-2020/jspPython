@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import kr.or.ddit.member.service.MemberService;
 import kr.or.ddit.member.service.MemberServiceImpl;
+import kr.or.ddit.mvc.view.InternalResourceViewResolver;
 import kr.or.ddit.vo.DataBasePropertyVO;
 import kr.or.ddit.vo.MemberVO;
 
@@ -40,17 +41,11 @@ public class MemberListControllerServlet extends HttpServlet {
 		req.setAttribute("memberList", memberList); //memberList 가져와서 "memberList"라는 이름으로 jsp에 보내주기 
 		
 		//4.
-		String viewName = "/WEB-INF/views/member/memberList.jsp";
+		String viewName = "member/memberList";
 		
 		
 		//5번단계 
-		// 규칙! redirect:/ 로 시작되는 viewName은 redirect로 넘기기
-		if(viewName.startsWith("redirect:")) { //viewName이 redirect:로 시작 할 경우  
-			viewName = viewName.substring("redirect:".length()); // redirect:길이 만큼 잘라라 => redirect: 이부분 삭제
-			resp.sendRedirect(req.getContextPath() + viewName); //   req.getContextPath() +  /login/loginForm.jsp
-		}else { //forward할 경우
-			req.getRequestDispatcher(viewName).forward(req, resp);
-		}
+		new InternalResourceViewResolver("/WEB-INF/views/", ".jsp").resolveView(viewName, req, resp);
 		
 		
 		
